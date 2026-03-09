@@ -33,6 +33,7 @@ export default function TaskModal({ task, projects, defaultStatus, onSave, onDel
   const [priority, setPriority] = useState<Priority>(task?.priority || 'medium')
   const [status, setStatus] = useState<TaskStatus>(task?.status || defaultStatus || 'backlog')
   const [projectId, setProjectId] = useState<string>(task?.project_id || '')
+  const [agentName, setAgentName] = useState<string>(task?.agent_name || '')
   const [saving, setSaving] = useState(false)
   const [deleting, setDeleting] = useState(false)
 
@@ -46,7 +47,14 @@ export default function TaskModal({ task, projects, defaultStatus, onSave, onDel
   async function handleSave() {
     if (!title.trim()) return
     setSaving(true)
-    await onSave({ title: title.trim(), description: description.trim() || null, priority, status, project_id: projectId || null })
+    await onSave({
+      title: title.trim(),
+      description: description.trim() || null,
+      priority,
+      status,
+      project_id: projectId || null,
+      agent_name: agentName.trim() || null,
+    })
     setSaving(false)
     onClose()
   }
@@ -168,6 +176,18 @@ export default function TaskModal({ task, projects, defaultStatus, onSave, onDel
                 <option key={p.id} value={p.id}>{p.name}</option>
               ))}
             </select>
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: '12px', color: '#888', marginBottom: '6px', fontWeight: 500 }}>
+              Agent Name <span style={{ color: '#555', fontWeight: 400 }}>(optional)</span>
+            </label>
+            <input
+              value={agentName}
+              onChange={e => setAgentName(e.target.value)}
+              placeholder="e.g. linkbot-main, subagent-xyz"
+              style={{ fontFamily: 'monospace', fontSize: '12px' }}
+            />
           </div>
         </div>
 

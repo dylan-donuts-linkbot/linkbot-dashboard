@@ -72,6 +72,23 @@ export default function TaskCard({ task, index, onClick }: TaskCardProps) {
             </div>
           )}
 
+          {/* Agent badge */}
+          {task.agent_name && (
+            <div style={{ marginBottom: '6px' }}>
+              <span style={{
+                fontSize: '10px',
+                color: '#a78bfa',
+                background: '#a78bfa15',
+                border: '1px solid #a78bfa33',
+                padding: '2px 6px',
+                borderRadius: '3px',
+                fontFamily: 'monospace',
+              }}>
+                🤖 {task.agent_name}
+              </span>
+            </div>
+          )}
+
           {/* Footer */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '6px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>

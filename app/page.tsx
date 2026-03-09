@@ -4,16 +4,27 @@ export const dynamic = 'force-dynamic'
 
 import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
-import { Task, Project, ActivityLog, Metrics, SpendLog, Session } from '@/types'
+import { Task, Project, ActivityLog, Metrics, SpendLog, Session, TokenUsage } from '@/types'
 import Header from '@/components/Header'
 import MetricsPanel from '@/components/MetricsPanel'
 import KanbanBoard from '@/components/KanbanBoard'
 import ActivityFeed from '@/components/ActivityFeed'
+import ProjectModal from '@/components/ProjectModal'
+import ContextModal from '@/components/ContextModal'
 
 const DEFAULT_PROJECTS: Project[] = [
   { id: 'coin-launch', name: 'Coin Launch', color: '#f59e0b', created_at: '' },
   { id: 'ecom-1', name: 'E-commerce 1', color: '#3b82f6', created_at: '' },
 ]
+
+function getLast7Days(): string[] {
+  const days: string[] = []
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(Date.now() - i * 86400000)
+    days.push(d.toISOString().slice(0, 10))
+  }
+  return days
+}
 
 export default function Dashboard() {
   const [projects, setProjects] = useState<Project[]>([])
@@ -25,10 +36,13 @@ export default function Dashboard() {
     activeProjectsCount: 0,
     totalSpend: 0,
     spendByProject: [],
+    tokenUsage: { totalInput: 0, totalOutput: 0, totalCost: 0, model: null, dailyBars: [] },
   })
   const [activeProject, setActiveProject] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [showNewProject, setShowNewProject] = useState(false)
+  const [viewContextProject, setViewContextProject] = useState<Project | null>(null)
 
   const isConfigured =
     process.env.NEXT_PUBLIC_SUPABASE_URL &&
@@ -36,7 +50,7 @@ export default function Dashboard() {
 
   const loadAll = useCallback(async () => {
     if (!isConfigured) {
-      // Show demo data when Supabase isn't configured
+      // Demo mode
       setProjects(DEFAULT_PROJECTS)
       setTasks([
         {
@@ -46,6 +60,7 @@ export default function Dashboard() {
           status: 'in_progress',
           priority: 'urgent',
           project_id: 'coin-launch',
+          agent_name: 'linkbot-main',
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
           project: DEFAULT_PROJECTS[0],
@@ -68,6 +83,7 @@ export default function Dashboard() {
           status: 'backlog',
           priority: 'high',
           project_id: 'coin-launch',
+          agent_name: 'subagent-deploy',
           created_at: new Date(Date.now() - 172800000).toISOString(),
           updated_at: new Date().toISOString(),
           project: DEFAULT_PROJECTS[0],
@@ -98,7 +114,7 @@ export default function Dashboard() {
       setActivity([
         {
           id: 'a1',
-          action: 'Dashboard initialized',
+          action: 'Dashboard v2 initialized',
           detail: 'Connect Supabase to go live',
           project_id: null,
           created_at: new Date().toISOString(),
@@ -106,7 +122,7 @@ export default function Dashboard() {
         {
           id: 'a2',
           action: 'Demo data loaded',
-          detail: 'Showing sample tasks — fill in .env.local to connect real data',
+          detail: 'Fill in .env.local to connect real data',
           project_id: null,
           created_at: new Date(Date.now() - 60000).toISOString(),
         },
@@ -117,6 +133,17 @@ export default function Dashboard() {
         activeProjectsCount: 2,
         totalSpend: 0,
         spendByProject: [],
+        tokenUsage: {
+          totalInput: 1200,
+          totalOutput: 800,
+          totalCost: 0.0024,
+          model: 'claude-sonnet-4',
+          dailyBars: getLast7Days().map((date, i) => ({
+            date,
+            input: i < 5 ? Math.floor(Math.random() * 2000) : 0,
+            output: i < 5 ? Math.floor(Math.random() * 1000) : 0,
+          })),
+        },
       })
       setLoading(false)
       return
@@ -131,12 +158,14 @@ export default function Dashboard() {
         { data: activityData },
         { data: sessionsData },
         { data: spendData },
+        { data: tokenData },
       ] = await Promise.all([
         supabase.from('projects').select('*').order('created_at', { ascending: true }),
         supabase.from('tasks').select('*, project:projects(*)').order('created_at', { ascending: false }),
         supabase.from('activity_log').select('*, project:projects(*)').order('created_at', { ascending: false }).limit(50),
         supabase.from('sessions').select('id, started_at'),
         supabase.from('spend_log').select('*, project:projects(id, name, color)'),
+        supabase.from('token_usage').select('*').order('created_at', { ascending: false }).limit(500),
       ])
 
       const projectList = (projectsData as Project[]) || []
@@ -144,12 +173,13 @@ export default function Dashboard() {
       const activityList = (activityData as ActivityLog[]) || []
       const sessionList = (sessionsData as Session[]) || []
       const spendList = (spendData as SpendLog[]) || []
+      const tokenList = (tokenData as TokenUsage[]) || []
 
       setProjects(projectList)
       setTasks(taskList)
       setActivity(activityList)
 
-      // Compute metrics
+      // Compute spend metrics
       const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString()
       const doneThisWeek = taskList.filter(
         t => t.status === 'done' && t.updated_at >= weekAgo
@@ -168,12 +198,29 @@ export default function Dashboard() {
         spendByProjectMap[s.project_id].amount += Number(s.amount)
       })
 
+      // Compute token usage metrics
+      const totalInput = tokenList.reduce((sum, t) => sum + t.input_tokens, 0)
+      const totalOutput = tokenList.reduce((sum, t) => sum + t.output_tokens, 0)
+      const totalCost = tokenList.reduce((sum, t) => sum + Number(t.cost_usd || 0), 0)
+      const lastModel = tokenList.find(t => t.model)?.model || null
+
+      const days7 = getLast7Days()
+      const dailyBars = days7.map(date => {
+        const dayTokens = tokenList.filter(t => t.created_at.slice(0, 10) === date)
+        return {
+          date,
+          input: dayTokens.reduce((s, t) => s + t.input_tokens, 0),
+          output: dayTokens.reduce((s, t) => s + t.output_tokens, 0),
+        }
+      })
+
       setMetrics({
         sessionCount: sessionList.length,
         tasksCompletedThisWeek: doneThisWeek,
         activeProjectsCount: projectList.length,
         totalSpend,
         spendByProject: Object.values(spendByProjectMap).sort((a, b) => b.amount - a.amount),
+        tokenUsage: { totalInput, totalOutput, totalCost, model: lastModel, dailyBars },
       })
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Failed to load data')
@@ -184,12 +231,22 @@ export default function Dashboard() {
 
   useEffect(() => { loadAll() }, [loadAll])
 
+  async function handleCreateProject(data: { name: string; color: string; context: string | null }) {
+    await supabase.from('projects').insert([{
+      ...data,
+      created_at: new Date().toISOString(),
+    }])
+    loadAll()
+  }
+
   return (
     <div style={{ minHeight: '100vh', background: '#0f0f0f' }}>
       <Header
         activeProject={activeProject}
         projects={projects}
         onSelectProject={setActiveProject}
+        onNewProject={() => setShowNewProject(true)}
+        onViewContext={setViewContextProject}
       />
 
       <main style={{ padding: '20px 24px', maxWidth: '1600px', margin: '0 auto' }}>
@@ -271,6 +328,21 @@ export default function Dashboard() {
           </div>
         </section>
       </main>
+
+      {/* Modals */}
+      {showNewProject && (
+        <ProjectModal
+          onSave={handleCreateProject}
+          onClose={() => setShowNewProject(false)}
+        />
+      )}
+
+      {viewContextProject && (
+        <ContextModal
+          project={viewContextProject}
+          onClose={() => setViewContextProject(null)}
+        />
+      )}
     </div>
   )
 }

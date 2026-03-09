@@ -5,6 +5,7 @@ export interface Project {
   id: string
   name: string
   color: string
+  context?: string | null
   created_at: string
 }
 
@@ -15,6 +16,7 @@ export interface Task {
   status: TaskStatus
   priority: Priority
   project_id: string | null
+  agent_name?: string | null
   created_at: string
   updated_at: string
   project?: Project
@@ -46,10 +48,29 @@ export interface SpendLog {
   project?: Project
 }
 
+export interface TokenUsage {
+  id: string
+  session_id: string | null
+  input_tokens: number
+  output_tokens: number
+  model: string | null
+  cost_usd: number | null
+  created_at: string
+}
+
+export interface TokenUsageStats {
+  totalInput: number
+  totalOutput: number
+  totalCost: number
+  model: string | null
+  dailyBars: { date: string; input: number; output: number }[]
+}
+
 export interface Metrics {
   sessionCount: number
   tasksCompletedThisWeek: number
   activeProjectsCount: number
   totalSpend: number
   spendByProject: { project: string; amount: number; color: string }[]
+  tokenUsage: TokenUsageStats
 }
