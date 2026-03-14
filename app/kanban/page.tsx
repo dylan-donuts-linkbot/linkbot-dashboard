@@ -1,0 +1,165 @@
+'use client'
+
+import { useState, useEffect, useCallback } from 'react'
+import { Task, Project } from '@/types'
+import { supabase } from '@/lib/supabase'
+import KanbanBoard from '@/components/kanban/KanbanBoard'
+import QuickAddTask from '@/components/tasks/QuickAddTask'
+import ColorDot from '@/components/shared/ColorDot'
+import { useSearchParams, useRouter } from 'next/navigation'
+import { Suspense } from 'react'
+
+function KanbanPageInner() {
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const [tasks, setTasks] = useState<Task[]>([])
+  const [projects, setProjects] = useState<Project[]>([])
+  const [loading, setLoading] = useState(true)
+  const [filterProject, setFilterProject] = useState<string>(searchParams.get('project') ?? 'all')
+
+  const loadData = useCallback(async () => {
+    try {
+      const [{ data: tasksData }, { data: projectsData }] = await Promise.all([
+        supabase.from('tasks').select('*, project:projects(*)').order('created_at', { ascending: false }),
+        supabase.from('projects').select('*').order('created_at', { ascending: true }),
+      ])
+      setTasks((tasksData as Task[]) ?? [])
+      setProjects((projectsData as Project[]) ?? [])
+    } catch {
+      // ignore
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  useEffect(() => { loadData() }, [loadData])
+
+  // Update URL when filter changes
+  function handleProjectFilter(projectId: string) {
+    setFilterProject(projectId)
+    if (projectId === 'all') {
+      router.replace('/kanban')
+    } else {
+      router.replace(`/kanban?project=${projectId}`)
+    }
+  }
+
+  const selectedProject = projects.find(p => p.id === filterProject)
+  const activeCounts = {
+    backlog: tasks.filter(t => t.status === 'backlog' && (filterProject === 'all' || t.project_id === filterProject)).length,
+    in_progress: tasks.filter(t => t.status === 'in_progress' && (filterProject === 'all' || t.project_id === filterProject)).length,
+    in_review: tasks.filter(t => t.status === 'in_review' && (filterProject === 'all' || t.project_id === filterProject)).length,
+    done: tasks.filter(t => t.status === 'done' && (filterProject === 'all' || t.project_id === filterProject)).length,
+  }
+
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '300px' }}>
+        <div style={{ fontSize: '14px', color: '#6b7280' }}>Loading board...</div>
+      </div>
+    )
+  }
+
+  return (
+    <div>
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '20px' }}>
+        <div>
+          <h1 style={{ margin: '0 0 4px', fontSize: '24px', fontWeight: 700, color: '#f0f0f0' }}>Kanban</h1>
+          <p style={{ margin: 0, fontSize: '14px', color: '#6b7280' }}>
+            {activeCounts.in_progress} in progress · {activeCounts.backlog} backlog
+          </p>
+        </div>
+        <QuickAddTask
+          projects={projects}
+          defaultProjectId={filterProject !== 'all' ? filterProject : undefined}
+          onAdded={loadData}
+        />
+      </div>
+
+      {/* Project filter */}
+      <div style={{ display: 'flex', gap: '6px', marginBottom: '20px', flexWrap: 'wrap', alignItems: 'center' }}>
+        <span style={{ fontSize: '12px', color: '#6b7280', marginRight: '4px' }}>Filter:</span>
+        <button
+          onClick={() => handleProjectFilter('all')}
+          style={{
+            padding: '5px 12px',
+            fontSize: '12px',
+            background: filterProject === 'all' ? '#6366f1' : '#111118',
+            color: filterProject === 'all' ? '#fff' : '#9ca3af',
+            border: filterProject === 'all' ? '1px solid #6366f1' : '1px solid #1e1e2e',
+            borderRadius: '6px',
+            cursor: 'pointer',
+            fontWeight: filterProject === 'all' ? 600 : 400,
+          }}
+        >
+          All Projects
+        </button>
+        {projects.map(p => (
+          <button
+            key={p.id}
+            onClick={() => handleProjectFilter(p.id)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '5px 12px',
+              fontSize: '12px',
+              background: filterProject === p.id ? p.color + '22' : '#111118',
+              color: filterProject === p.id ? p.color : '#9ca3af',
+              border: `1px solid ${filterProject === p.id ? p.color + '66' : '#1e1e2e'}`,
+              borderRadius: '6px',
+              cursor: 'pointer',
+              fontWeight: filterProject === p.id ? 600 : 400,
+            }}
+          >
+            <ColorDot color={p.color} size={6} />
+            {p.name}
+          </button>
+        ))}
+      </div>
+
+      {/* Context banner when project filtered */}
+      {selectedProject && (
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+          padding: '10px 14px',
+          background: selectedProject.color + '11',
+          border: `1px solid ${selectedProject.color}33`,
+          borderRadius: '7px',
+          marginBottom: '16px',
+        }}>
+          <ColorDot color={selectedProject.color} size={8} />
+          <span style={{ fontSize: '13px', color: '#e5e7eb', fontWeight: 600 }}>{selectedProject.name}</span>
+          {selectedProject.stage && (
+            <span style={{ fontSize: '12px', color: '#9ca3af' }}>· {selectedProject.stage}</span>
+          )}
+          <span style={{ fontSize: '12px', color: '#9ca3af', marginLeft: 'auto' }}>
+            {activeCounts.in_progress + activeCounts.backlog + activeCounts.in_review + activeCounts.done} total tasks
+          </span>
+        </div>
+      )}
+
+      {/* Kanban board */}
+      <KanbanBoard
+        initialTasks={tasks}
+        projects={projects}
+        activeProjectId={filterProject !== 'all' ? filterProject : null}
+      />
+    </div>
+  )
+}
+
+export default function KanbanPage() {
+  return (
+    <Suspense fallback={
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '300px' }}>
+        <div style={{ fontSize: '14px', color: '#6b7280' }}>Loading...</div>
+      </div>
+    }>
+      <KanbanPageInner />
+    </Suspense>
+  )
+}

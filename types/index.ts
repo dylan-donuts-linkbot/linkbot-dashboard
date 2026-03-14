@@ -1,12 +1,25 @@
 export type Priority = 'low' | 'medium' | 'high' | 'urgent'
 export type TaskStatus = 'backlog' | 'in_progress' | 'in_review' | 'done'
+export type ProjectStatus = 'active' | 'paused' | 'archived' | 'complete'
 
 export interface Project {
   id: string
   name: string
   color: string
   context?: string | null
+  // v3 fields
+  status?: ProjectStatus
+  description?: string | null
+  github_repo?: string | null
+  vercel_project?: string | null
+  live_url?: string | null
+  stage?: string | null
+  prd_content?: string | null
+  prd_url?: string | null
+  assignees?: string[]
+  is_system?: boolean
   created_at: string
+  updated_at?: string
 }
 
 export interface Task {
@@ -17,6 +30,12 @@ export interface Task {
   priority: Priority
   project_id: string | null
   agent_name?: string | null
+  // v3 fields
+  assignee?: string | null
+  estimated_minutes?: number | null
+  due_date?: string | null
+  instructions?: string | null
+  priority_rank?: number | null
   created_at: string
   updated_at: string
   project?: Project
