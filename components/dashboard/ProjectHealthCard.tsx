@@ -1,3 +1,5 @@
+'use client'
+
 import Link from 'next/link'
 import { Project, Task } from '@/types'
 import ColorDot from '@/components/shared/ColorDot'

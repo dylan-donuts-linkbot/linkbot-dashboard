@@ -1,3 +1,5 @@
+'use client'
+
 import { Project } from '@/types'
 import ColorDot from '@/components/shared/ColorDot'
 import StatusBadge from '@/components/shared/StatusBadge'
