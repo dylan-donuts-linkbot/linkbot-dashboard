@@ -1,4 +1,4 @@
-import { createServerClient } from '@/lib/supabase'
+import { createServerClient } from '@/lib/supabase-server'
 import { Task, Project, SpendLog, TokenUsage, Session } from '@/types'
 
 export const dynamic = 'force-dynamic'
@@ -14,7 +14,7 @@ function getLast7Days(): string[] {
 
 async function getMetricsData() {
   try {
-    const supabase = createServerClient()
+    const supabase = await createServerClient()
     const [
       { data: tasksData },
       { data: projectsData },
@@ -35,7 +35,8 @@ async function getMetricsData() {
       tokens: (tokenData as TokenUsage[]) ?? [],
       sessions: (sessionsData as Session[]) ?? [],
     }
-  } catch {
+  } catch (error) {
+    console.error('Failed to load metrics data:', error)
     return { tasks: [], projects: [], spend: [], tokens: [], sessions: [] }
   }
 }

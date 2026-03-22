@@ -19,10 +19,12 @@ export default function QuickAddTask({ projects, defaultProjectId, defaultStatus
   const [projectId, setProjectId] = useState(defaultProjectId ?? '')
   const [priority, setPriority] = useState<Priority>('medium')
   const [saving, setSaving] = useState(false)
+  const [addError, setAddError] = useState<string | null>(null)
 
   async function handleAdd() {
     if (!title.trim()) return
     setSaving(true)
+    setAddError(null)
     try {
       await createTask({
         title: title.trim(),
@@ -35,8 +37,9 @@ export default function QuickAddTask({ projects, defaultProjectId, defaultStatus
       setOpen(false)
       onAdded?.()
       router.refresh()
-    } catch {
-      // ignore
+    } catch (error) {
+      console.error('Failed to add task:', error)
+      setAddError(error instanceof Error ? error.message : 'Failed to add task')
     } finally {
       setSaving(false)
     }
@@ -95,6 +98,11 @@ export default function QuickAddTask({ projects, defaultProjectId, defaultStatus
           outline: 'none',
         }}
       />
+      {addError && (
+        <div style={{ fontSize: '12px', color: '#f87171', padding: '4px 0' }}>
+          ⚠ {addError}
+        </div>
+      )}
       <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
         <select
           value={projectId}

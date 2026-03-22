@@ -26,6 +26,7 @@ export default function KanbanBoard({ initialTasks, projects, activeProjectId }:
   const [tasks, setTasks] = useState<Task[]>(initialTasks)
   const [editingTask, setEditingTask] = useState<Task | null | undefined>(undefined)
   const [newTaskStatus, setNewTaskStatus] = useState<TaskStatus>('backlog')
+  const [mutationError, setMutationError] = useState<string | null>(null)
 
   const filtered = activeProjectId
     ? tasks.filter(t => t.project_id === activeProjectId)
@@ -48,32 +49,45 @@ export default function KanbanBoard({ initialTasks, projects, activeProjectId }:
     try {
       await updateTaskStatus(draggableId, newStatus)
       router.refresh()
-    } catch {
-      // Revert optimistic update
+    } catch (error) {
+      console.error('Failed to update task status:', error)
+      setMutationError(error instanceof Error ? error.message : 'Failed to move task')
       setTasks(initialTasks)
     }
   }, [initialTasks, router])
 
   async function handleSaveTask(data: Partial<Task>) {
-    if (editingTask) {
-      const updated = await updateTask(editingTask.id, data)
-      setTasks(prev => prev.map(t => t.id === editingTask.id ? updated : t))
-    } else {
-      const created = await createTask({
-        ...data,
-        status: data.status ?? newTaskStatus,
-        title: data.title ?? '',
-      })
-      setTasks(prev => [...prev, created])
+    setMutationError(null)
+    try {
+      if (editingTask) {
+        const updated = await updateTask(editingTask.id, data)
+        setTasks(prev => prev.map(t => t.id === editingTask.id ? updated : t))
+      } else {
+        const created = await createTask({
+          ...data,
+          status: data.status ?? newTaskStatus,
+          title: data.title ?? '',
+        })
+        setTasks(prev => [...prev, created])
+      }
+      router.refresh()
+    } catch (error) {
+      console.error('Failed to save task:', error)
+      setMutationError(error instanceof Error ? error.message : 'Failed to save task')
     }
-    router.refresh()
   }
 
   async function handleDeleteTask() {
     if (!editingTask) return
-    await deleteTask(editingTask.id)
-    setTasks(prev => prev.filter(t => t.id !== editingTask.id))
-    router.refresh()
+    setMutationError(null)
+    try {
+      await deleteTask(editingTask.id)
+      setTasks(prev => prev.filter(t => t.id !== editingTask.id))
+      router.refresh()
+    } catch (error) {
+      console.error('Failed to delete task:', error)
+      setMutationError(error instanceof Error ? error.message : 'Failed to delete task')
+    }
   }
 
   function openNew(status: TaskStatus) {
@@ -83,6 +97,20 @@ export default function KanbanBoard({ initialTasks, projects, activeProjectId }:
 
   return (
     <>
+      {mutationError && (
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '10px',
+          padding: '10px 14px', marginBottom: '12px',
+          background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)',
+          borderRadius: '7px', fontSize: '13px', color: '#f87171',
+        }}>
+          <span>⚠</span>
+          <span style={{ flex: 1 }}>{mutationError}</span>
+          <button onClick={() => setMutationError(null)} style={{ background: 'none', border: 'none', color: '#f87171', cursor: 'pointer', fontSize: '16px', padding: 0 }}>
+            ×
+          </button>
+        </div>
+      )}
       <DragDropContext onDragEnd={onDragEnd}>
         <div style={{
           display: 'grid',

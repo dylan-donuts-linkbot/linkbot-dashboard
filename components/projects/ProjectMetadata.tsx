@@ -22,6 +22,7 @@ export default function ProjectMetadata({ project }: ProjectMetadataProps) {
   const router = useRouter()
   const [editing, setEditing] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
 
   const [name, setName] = useState(project.name)
   const [description, setDescription] = useState(project.description ?? '')
@@ -35,6 +36,7 @@ export default function ProjectMetadata({ project }: ProjectMetadataProps) {
 
   async function handleSave() {
     setSaving(true)
+    setSaveError(null)
     try {
       await updateProject(project.id, {
         name,
@@ -49,8 +51,9 @@ export default function ProjectMetadata({ project }: ProjectMetadataProps) {
       })
       setEditing(false)
       router.refresh()
-    } catch {
-      // ignore
+    } catch (error) {
+      console.error('Failed to save project:', error)
+      setSaveError(error instanceof Error ? error.message : 'Failed to save')
     } finally {
       setSaving(false)
     }
@@ -78,7 +81,12 @@ export default function ProjectMetadata({ project }: ProjectMetadataProps) {
       marginBottom: '20px',
     }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-        <h2 style={{ margin: 0, fontSize: '14px', fontWeight: 600, color: '#f0f0f0' }}>Project Details</h2>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <h2 style={{ margin: 0, fontSize: '14px', fontWeight: 600, color: '#f0f0f0' }}>Project Details</h2>
+          {saveError && (
+            <span style={{ fontSize: '12px', color: '#f87171' }}>⚠ {saveError}</span>
+          )}
+        </div>
         {!editing ? (
           <button
             onClick={() => setEditing(true)}

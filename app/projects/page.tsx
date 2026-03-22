@@ -21,6 +21,7 @@ export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([])
   const [tasks, setTasks] = useState<Task[]>([])
   const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState<string | null>(null)
   const [filterStatus, setFilterStatus] = useState<FilterStatus>('all')
   const [showNewProject, setShowNewProject] = useState(false)
 
@@ -29,6 +30,7 @@ export default function ProjectsPage() {
   const [newDescription, setNewDescription] = useState('')
   const [newColor, setNewColor] = useState('#6366f1')
   const [creating, setCreating] = useState(false)
+  const [createError, setCreateError] = useState<string | null>(null)
 
   useEffect(() => {
     async function load() {
@@ -39,8 +41,9 @@ export default function ProjectsPage() {
         ])
         setProjects((projectsData as Project[]) ?? [])
         setTasks((tasksData as Task[]) ?? [])
-      } catch {
-        // ignore
+      } catch (error) {
+        console.error('Failed to load projects:', error)
+        setLoadError(error instanceof Error ? error.message : 'Failed to load projects')
       } finally {
         setLoading(false)
       }
@@ -56,6 +59,7 @@ export default function ProjectsPage() {
   async function handleCreateProject() {
     if (!newName.trim()) return
     setCreating(true)
+    setCreateError(null)
     try {
       await createProject({
         name: newName.trim(),
@@ -68,11 +72,11 @@ export default function ProjectsPage() {
       setNewColor('#6366f1')
       setShowNewProject(false)
       router.refresh()
-      // Reload
       const { data } = await supabase.from('projects').select('*').order('created_at', { ascending: true })
       setProjects((data as Project[]) ?? [])
-    } catch {
-      // ignore
+    } catch (error) {
+      console.error('Failed to create project:', error)
+      setCreateError(error instanceof Error ? error.message : 'Failed to create project')
     } finally {
       setCreating(false)
     }
@@ -93,6 +97,17 @@ export default function ProjectsPage() {
 
   return (
     <div>
+      {loadError && (
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '10px',
+          padding: '10px 14px', marginBottom: '16px',
+          background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)',
+          borderRadius: '7px', fontSize: '13px', color: '#f87171',
+        }}>
+          <span>⚠</span>
+          <span style={{ flex: 1 }}>{loadError}</span>
+        </div>
+      )}
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '24px' }}>
         <div>
@@ -263,6 +278,16 @@ export default function ProjectsPage() {
                 </div>
               </div>
             </div>
+
+            {createError && (
+              <div style={{
+                marginTop: '12px', padding: '9px 12px',
+                background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)',
+                borderRadius: '6px', fontSize: '12px', color: '#f87171',
+              }}>
+                {createError}
+              </div>
+            )}
 
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '24px' }}>
               <button className="btn-ghost" onClick={() => setShowNewProject(false)}>Cancel</button>

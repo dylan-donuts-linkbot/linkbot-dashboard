@@ -1,4 +1,4 @@
-import { createServerClient } from '@/lib/supabase'
+import { createServerClient } from '@/lib/supabase-server'
 import { ActivityLog, Project } from '@/types'
 import EmptyState from '@/components/shared/EmptyState'
 
@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic'
 
 async function getActivityData() {
   try {
-    const supabase = createServerClient()
+    const supabase = await createServerClient()
     const [{ data: activityData }, { data: projectsData }] = await Promise.all([
       supabase
         .from('activity_log')
@@ -19,7 +19,8 @@ async function getActivityData() {
       activity: (activityData as ActivityLog[]) ?? [],
       projects: (projectsData as Project[]) ?? [],
     }
-  } catch {
+  } catch (error) {
+    console.error('Failed to load activity data:', error)
     return { activity: [], projects: [] }
   }
 }

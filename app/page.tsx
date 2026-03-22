@@ -1,4 +1,4 @@
-import { createServerClient } from '@/lib/supabase'
+import { createServerClient } from '@/lib/supabase-server'
 import { Task, Project, ActivityLog, SpendLog, TokenUsage } from '@/types'
 import QuickStats from '@/components/dashboard/QuickStats'
 import ProjectHealthCard from '@/components/dashboard/ProjectHealthCard'
@@ -27,7 +27,7 @@ function formatDate(): string {
 
 async function getDashboardData() {
   try {
-    const supabase = createServerClient()
+    const supabase = await createServerClient()
 
     const [
       { data: projectsData },
@@ -50,7 +50,8 @@ async function getDashboardData() {
       spend: (spendData as SpendLog[]) ?? [],
       tokens: (tokenData as TokenUsage[]) ?? [],
     }
-  } catch {
+  } catch (error) {
+    console.error('Failed to load dashboard data:', error)
     return { projects: [], tasks: [], activity: [], spend: [], tokens: [] }
   }
 }

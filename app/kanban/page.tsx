@@ -15,9 +15,11 @@ function KanbanPageInner() {
   const [tasks, setTasks] = useState<Task[]>([])
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState<string | null>(null)
   const [filterProject, setFilterProject] = useState<string>(searchParams.get('project') ?? 'all')
 
   const loadData = useCallback(async () => {
+    setLoadError(null)
     try {
       const [{ data: tasksData }, { data: projectsData }] = await Promise.all([
         supabase.from('tasks').select('*, project:projects(*)').order('created_at', { ascending: false }),
@@ -25,8 +27,9 @@ function KanbanPageInner() {
       ])
       setTasks((tasksData as Task[]) ?? [])
       setProjects((projectsData as Project[]) ?? [])
-    } catch {
-      // ignore
+    } catch (error) {
+      console.error('Failed to load kanban data:', error)
+      setLoadError(error instanceof Error ? error.message : 'Failed to load board data')
     } finally {
       setLoading(false)
     }
@@ -62,6 +65,20 @@ function KanbanPageInner() {
 
   return (
     <div>
+      {loadError && (
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '10px',
+          padding: '10px 14px', marginBottom: '16px',
+          background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)',
+          borderRadius: '7px', fontSize: '13px', color: '#f87171',
+        }}>
+          <span>⚠</span>
+          <span style={{ flex: 1 }}>{loadError}</span>
+          <button onClick={loadData} style={{ background: 'none', border: 'none', color: '#f87171', cursor: 'pointer', fontSize: '12px', padding: 0 }}>
+            Retry
+          </button>
+        </div>
+      )}
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '20px' }}>
         <div>

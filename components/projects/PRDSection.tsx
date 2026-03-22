@@ -13,11 +13,13 @@ export default function PRDSection({ project }: PRDSectionProps) {
   const router = useRouter()
   const [editing, setEditing] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
   const [prdContent, setPrdContent] = useState(project.prd_content ?? '')
   const [prdUrl, setPrdUrl] = useState(project.prd_url ?? '')
 
   async function handleSave() {
     setSaving(true)
+    setSaveError(null)
     try {
       await updateProject(project.id, {
         prd_content: prdContent || null,
@@ -25,8 +27,9 @@ export default function PRDSection({ project }: PRDSectionProps) {
       })
       setEditing(false)
       router.refresh()
-    } catch {
-      // ignore
+    } catch (error) {
+      console.error('Failed to save PRD:', error)
+      setSaveError(error instanceof Error ? error.message : 'Failed to save')
     } finally {
       setSaving(false)
     }
@@ -103,6 +106,11 @@ export default function PRDSection({ project }: PRDSectionProps) {
             >
               {saving ? 'Saving...' : 'Save'}
             </button>
+          </div>
+        )}
+        {saveError && (
+          <div style={{ fontSize: '12px', color: '#f87171', marginTop: '4px' }}>
+            ⚠ {saveError}
           </div>
         )}
       </div>

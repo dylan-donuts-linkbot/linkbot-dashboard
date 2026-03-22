@@ -194,7 +194,9 @@ function ProjectsTab() {
     fetch('/api/memory/projects')
       .then((r) => r.json())
       .then((d) => setFiles(d.files || []))
-      .catch(() => {})
+      .catch((error: unknown) => {
+        console.error('Failed to load project memory files:', error)
+      })
       .finally(() => setLoading(false))
   }, [])
 

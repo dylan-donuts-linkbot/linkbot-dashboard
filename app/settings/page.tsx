@@ -1,4 +1,33 @@
+'use client'
+
+import { useState } from 'react'
+import { getSupabase } from '@/lib/supabase'
+import { useRouter } from 'next/navigation'
+
 export const dynamic = 'force-dynamic'
+
+function SignOutButton() {
+  const [loading, setLoading] = useState(false)
+  const router = useRouter()
+
+  async function handleSignOut() {
+    setLoading(true)
+    const supabase = getSupabase()
+    if (supabase) await supabase.auth.signOut()
+    router.push('/login')
+  }
+
+  return (
+    <button
+      onClick={handleSignOut}
+      disabled={loading}
+      className="btn-danger"
+      style={{ minWidth: '100px' }}
+    >
+      {loading ? 'Signing out…' : 'Sign out'}
+    </button>
+  )
+}
 
 export default function SettingsPage() {
   return (
@@ -9,6 +38,13 @@ export default function SettingsPage() {
       </div>
 
       <div style={{ maxWidth: '600px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        {/* Auth */}
+        <Section title="Account">
+          <SettingRow label="Session" description="Signed in via magic link">
+            <SignOutButton />
+          </SettingRow>
+        </Section>
+
         {/* Connection status */}
         <Section title="Connection">
           <SettingRow

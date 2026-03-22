@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import { createServerClient } from '@/lib/supabase'
+import { createServerClient } from '@/lib/supabase-server'
 import { Project } from '@/types'
 import Sidebar from '@/components/layout/Sidebar'
 
@@ -11,14 +11,15 @@ export const metadata: Metadata = {
 
 async function getProjects(): Promise<Project[]> {
   try {
-    const supabase = createServerClient()
+    const supabase = await createServerClient()
     const { data, error } = await supabase
       .from('projects')
       .select('id, name, color, status, is_system, created_at')
       .order('created_at', { ascending: true })
     if (error) return []
     return (data as Project[]) ?? []
-  } catch {
+  } catch (error) {
+    console.error('Failed to load projects for sidebar:', error)
     return []
   }
 }

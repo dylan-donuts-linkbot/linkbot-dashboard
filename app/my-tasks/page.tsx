@@ -20,12 +20,15 @@ export default function MyTasksPage() {
   const [tasks, setTasks] = useState<Task[]>([])
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState<string | null>(null)
+  const [mutationError, setMutationError] = useState<string | null>(null)
   const [editingTask, setEditingTask] = useState<Task | null | undefined>(undefined)
   const [filterStatus, setFilterStatus] = useState<FilterStatus>('all')
   const [filterProject, setFilterProject] = useState<string>('all')
   const [sortBy, setSortBy] = useState<SortBy>('priority_rank')
 
   const loadData = useCallback(async () => {
+    setLoadError(null)
     try {
       const [{ data: tasksData }, { data: projectsData }] = await Promise.all([
         supabase.from('tasks')
@@ -36,8 +39,9 @@ export default function MyTasksPage() {
       ])
       setTasks((tasksData as Task[]) ?? [])
       setProjects((projectsData as Project[]) ?? [])
-    } catch {
-      // ignore
+    } catch (error) {
+      console.error('Failed to load tasks:', error)
+      setLoadError(error instanceof Error ? error.message : 'Failed to load tasks')
     } finally {
       setLoading(false)
     }
@@ -87,25 +91,43 @@ export default function MyTasksPage() {
   }
 
   async function handleSaveTask(data: Partial<Task>) {
-    if (editingTask) {
-      await updateTask(editingTask.id, data)
+    setMutationError(null)
+    try {
+      if (editingTask) {
+        await updateTask(editingTask.id, data)
+      }
+      await loadData()
+      router.refresh()
+    } catch (error) {
+      console.error('Failed to save task:', error)
+      setMutationError(error instanceof Error ? error.message : 'Failed to save task')
     }
-    await loadData()
-    router.refresh()
   }
 
   async function handleDeleteTask() {
     if (!editingTask) return
-    await deleteTask(editingTask.id)
-    await loadData()
-    router.refresh()
+    setMutationError(null)
+    try {
+      await deleteTask(editingTask.id)
+      await loadData()
+      router.refresh()
+    } catch (error) {
+      console.error('Failed to delete task:', error)
+      setMutationError(error instanceof Error ? error.message : 'Failed to delete task')
+    }
   }
 
   async function handleMarkComplete(task: Task) {
-    const newStatus: TaskStatus = task.status === 'done' ? 'backlog' : 'done'
-    await updateTask(task.id, { status: newStatus })
-    await loadData()
-    router.refresh()
+    setMutationError(null)
+    try {
+      const newStatus: TaskStatus = task.status === 'done' ? 'backlog' : 'done'
+      await updateTask(task.id, { status: newStatus })
+      await loadData()
+      router.refresh()
+    } catch (error) {
+      console.error('Failed to update task status:', error)
+      setMutationError(error instanceof Error ? error.message : 'Failed to update task')
+    }
   }
 
   if (loading) {
@@ -118,6 +140,34 @@ export default function MyTasksPage() {
 
   return (
     <div>
+      {loadError && (
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '10px',
+          padding: '10px 14px', marginBottom: '16px',
+          background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)',
+          borderRadius: '7px', fontSize: '13px', color: '#f87171',
+        }}>
+          <span>⚠</span>
+          <span style={{ flex: 1 }}>{loadError}</span>
+          <button onClick={loadData} style={{ background: 'none', border: 'none', color: '#f87171', cursor: 'pointer', fontSize: '12px', padding: 0 }}>
+            Retry
+          </button>
+        </div>
+      )}
+      {mutationError && (
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '10px',
+          padding: '10px 14px', marginBottom: '16px',
+          background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)',
+          borderRadius: '7px', fontSize: '13px', color: '#f87171',
+        }}>
+          <span>⚠</span>
+          <span style={{ flex: 1 }}>{mutationError}</span>
+          <button onClick={() => setMutationError(null)} style={{ background: 'none', border: 'none', color: '#f87171', cursor: 'pointer', fontSize: '16px', padding: 0 }}>
+            ×
+          </button>
+        </div>
+      )}
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '24px' }}>
         <div>

@@ -1,4 +1,4 @@
-import { createServerClient } from '@/lib/supabase'
+import { createServerClient } from '@/lib/supabase-server'
 import { Project, Task, ActivityLog } from '@/types'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
@@ -16,7 +16,7 @@ interface PageProps {
 
 async function getProjectData(id: string) {
   try {
-    const supabase = createServerClient()
+    const supabase = await createServerClient()
     const [
       { data: project, error: projectError },
       { data: tasks },
@@ -34,7 +34,8 @@ async function getProjectData(id: string) {
       tasks: (tasks as Task[]) ?? [],
       activity: (activity as ActivityLog[]) ?? [],
     }
-  } catch {
+  } catch (error) {
+    console.error('Failed to load project data:', error)
     return null
   }
 }

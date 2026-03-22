@@ -1,37 +1,30 @@
-import { createClient, SupabaseClient } from '@supabase/supabase-js'
+import { createBrowserClient } from '@supabase/ssr'
 
-let _client: SupabaseClient | null = null
+const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ''
+const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
+const isConfigured = !!(url && anonKey && url !== 'your_supabase_url')
 
-export function getSupabase(): SupabaseClient | null {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  if (!url || !key || url === 'your_supabase_url') return null
-  if (!_client) {
-    _client = createClient(url, key)
+// ─── Browser client (client components) ─────────────────────────────────────
+// Singleton — reused across renders, includes auth session from cookies.
+let _browserClient: ReturnType<typeof createBrowserClient> | null = null
+
+export function getSupabase(): ReturnType<typeof createBrowserClient> | null {
+  if (!isConfigured) return null
+  if (!_browserClient) {
+    _browserClient = createBrowserClient(url, anonKey)
   }
-  return _client
+  return _browserClient
 }
 
-// Server-side client (for server components and server actions)
-export function createServerClient(): SupabaseClient {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  if (!url || !key) {
-    throw new Error('Supabase environment variables not configured')
-  }
-  return createClient(url, key)
-}
+// ─── Convenience proxy for client components ─────────────────────────────────
+// Falls back to a no-op chain when Supabase is not configured (demo mode).
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const noop: any = new Proxy({}, { get: () => noop })
 
-// Convenience re-export for client components
 export const supabase = {
   from: (table: string) => {
     const client = getSupabase()
-    if (!client) {
-      // Return a no-op chain so unchecked calls don't crash
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const noop: any = new Proxy({}, { get: () => noop })
-      return noop
-    }
+    if (!client) return noop
     return client.from(table)
   },
 }

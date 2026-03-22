@@ -1,6 +1,6 @@
 'use server'
 
-import { createServerClient } from '@/lib/supabase'
+import { createServerClient } from '@/lib/supabase-server'
 import { Task, Project, TaskStatus, Priority, ProjectStatus } from '@/types'
 
 // ─── Project Actions ───────────────────────────────────────────────────────
@@ -18,7 +18,7 @@ export async function createProject(data: {
   prd_url?: string | null
   assignees?: string[]
 }) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   const { data: project, error } = await supabase
     .from('projects')
     .insert([{
@@ -35,7 +35,7 @@ export async function createProject(data: {
 }
 
 export async function updateProject(id: string, data: Partial<Omit<Project, 'id' | 'created_at'>>) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   const { data: project, error } = await supabase
     .from('projects')
     .update({ ...data, updated_at: new Date().toISOString() })
@@ -48,7 +48,7 @@ export async function updateProject(id: string, data: Partial<Omit<Project, 'id'
 }
 
 export async function deleteProject(id: string) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   const { error } = await supabase.from('projects').delete().eq('id', id)
   if (error) throw new Error(error.message)
 }
@@ -68,7 +68,7 @@ export async function createTask(data: {
   instructions?: string | null
   priority_rank?: number | null
 }) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   const { data: task, error } = await supabase
     .from('tasks')
     .insert([{
@@ -86,7 +86,7 @@ export async function createTask(data: {
 }
 
 export async function updateTask(id: string, data: Partial<Omit<Task, 'id' | 'created_at' | 'project'>>) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   const { data: task, error } = await supabase
     .from('tasks')
     .update({ ...data, updated_at: new Date().toISOString() })
@@ -99,7 +99,7 @@ export async function updateTask(id: string, data: Partial<Omit<Task, 'id' | 'cr
 }
 
 export async function updateTaskStatus(id: string, status: TaskStatus) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   const { error } = await supabase
     .from('tasks')
     .update({ status, updated_at: new Date().toISOString() })
@@ -109,13 +109,13 @@ export async function updateTaskStatus(id: string, status: TaskStatus) {
 }
 
 export async function deleteTask(id: string) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   const { error } = await supabase.from('tasks').delete().eq('id', id)
   if (error) throw new Error(error.message)
 }
 
 export async function reorderTasks(tasks: { id: string; priority_rank: number }[]) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   const updates = tasks.map(({ id, priority_rank }) =>
     supabase.from('tasks').update({ priority_rank, updated_at: new Date().toISOString() }).eq('id', id)
   )
