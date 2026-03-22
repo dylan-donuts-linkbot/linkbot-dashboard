@@ -1,7 +1,55 @@
 # Architecture Notes — LinkBot Dashboard
 
 > Written: 2026-03-13
-> Purpose: Honest assessment of current state, patterns, and targeted refactoring recommendations. No code has been changed.
+> Last updated: 2026-03-22
+> Purpose: Honest assessment of current state, patterns, and targeted refactoring recommendations.
+
+---
+
+## Phase 1 — Auth + Hardening (completed 2026-03-22)
+
+- **Supabase magic link auth** — `app/login/page.tsx`, `app/auth/callback/route.ts`
+- **Route protection** — `proxy.ts` (Next.js 16 equivalent of middleware); redirects unauthenticated users to `/login`
+- **RLS policies** — all 6 tables updated to `auth.uid() is not null`; `supabase-migration-v4-auth-rls.sql`
+- **Server/browser Supabase split** — `lib/supabase.ts` (browser, no cookies), `lib/supabase-server.ts` (server, reads auth cookies via `@supabase/ssr`)
+- **REST API routes** — `/api/tasks`, `/api/tasks/[id]`, `/api/projects`, `/api/projects/[id]` with consistent `{ data }` / `{ error }` shapes; auth via `lib/api-auth.ts`
+- **Error handling** — all silent `catch` blocks replaced with error state + UI banners; no swallowed failures anywhere
+
+---
+
+## Phase 2 — Sync Infrastructure (completed 2026-03-22)
+
+### What was built
+
+**Database** (`supabase-migration-v6-sync.sql`, `supabase-migration-v7-sync-triggers.sql`):
+- `tasks` and `projects` gain four sync columns: `external_id`, `sync_source`, `last_synced_at`, `sync_status`
+- `sync_queue` table — idempotency log for all inbound/outbound sync events
+- `agent_logs` table — structured audit trail for OpenClaw agent activity
+- Postgres trigger `sync_queue_local_trigger()` fires on INSERT/UPDATE/DELETE on both tables; skips rows where `sync_source = 'openclaw'` to prevent echo loops
+
+**API routes** (all authenticated via `x-openclaw-api-key` header, using service role client):
+- `POST /api/sync/inbound` — idempotency-checked upsert from OpenClaw into tasks/projects; writes sync_queue entry, applies operation, marks processed or failed
+- `GET /api/sync/outbound` — pull endpoint; returns records modified since `?since=` timestamp for a given `?table=`
+- `POST /api/sync/log` — writes structured entries to `agent_logs`
+- `GET /api/sync/queue` — returns sync_queue items, filterable by `?status=`
+
+**UI**:
+- `/logs` page — reverse-chronological `agent_logs` feed; filterable by project and agent; agent badges color-coded (openclaw=amber, discovery=blue, design=purple, dev=teal)
+
+**Supporting infrastructure**:
+- `lib/supabase-service.ts` — service role client (bypasses RLS); used only by sync routes
+- `lib/sync-auth.ts` — validates `x-openclaw-api-key` / `Authorization: Bearer` against `OPENCLAW_API_KEY` env var
+- `OPENCLAW_API_KEY` stored in macOS Keychain (`linkbot-dashboard` / `openclaw_api_key`) and Vercel env vars
+- `SUPABASE_SERVICE_ROLE_KEY` added to Vercel env vars
+
+### Key decisions
+
+- **Service role for sync routes, not anon key** — sync requests arrive from OpenClaw without a Supabase JWT, so the anon key would be blocked by RLS. Service role bypasses RLS entirely and is kept server-side only.
+- **Trigger skips `sync_source = 'openclaw'` at the row level** — checked inside the function body (not as a `WHEN` clause) so the logic is visible and easy to change. This is the echo-loop prevention.
+- **Idempotency on inbound** — `idempotency_key` is unique-constrained in `sync_queue`; duplicate POSTs return 200 immediately without re-applying the operation.
+- **`agent_logs` is append-only** — no update or delete routes; the API only exposes POST (write) and the dashboard reads it directly via Supabase client.
+
+---
 
 ---
 
