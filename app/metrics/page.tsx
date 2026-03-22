@@ -25,7 +25,7 @@ async function getMetricsData() {
       supabase.from('tasks').select('id, status, project_id, updated_at').order('updated_at', { ascending: false }),
       supabase.from('projects').select('id, name, color, status').order('created_at', { ascending: true }),
       supabase.from('spend_log').select('*, project:projects(id, name, color)').order('created_at', { ascending: false }),
-      supabase.from('token_usage').select('*').order('created_at', { ascending: false }).limit(500),
+      supabase.from('token_usage').select('*').order('created_at', { ascending: false }).limit(2000),
       supabase.from('sessions').select('*').order('started_at', { ascending: false }).limit(50),
     ])
     return {
@@ -92,6 +92,45 @@ export default async function MetricsPage() {
   })
   const modelList = Object.entries(modelCounts).sort((a, b) => b[1] - a[1])
 
+  // Provider breakdown
+  type ProviderStats = { cost: number; input: number; output: number }
+  const providerMap: Record<string, ProviderStats> = {}
+  tokens.forEach(t => {
+    const provider = t.provider ?? (t.model ? t.model.split('/')[0] : 'unknown')
+    if (!providerMap[provider]) providerMap[provider] = { cost: 0, input: 0, output: 0 }
+    providerMap[provider].cost += Number(t.cost_usd ?? 0)
+    providerMap[provider].input += t.input_tokens
+    providerMap[provider].output += t.output_tokens
+  })
+  const providerList = Object.entries(providerMap).sort((a, b) => b[1].cost - a[1].cost)
+
+  // Token cost by project
+  const projectById: Record<string, Project> = {}
+  projects.forEach(p => { projectById[p.id] = p })
+  type ProjectTokenStats = { name: string; color: string; cost: number; input: number; output: number }
+  const tokenByProject: Record<string, ProjectTokenStats> = {}
+  let tokenUnattributed = { cost: 0, input: 0, output: 0 }
+  tokens.forEach(t => {
+    if (!t.project_id) {
+      tokenUnattributed.cost += Number(t.cost_usd ?? 0)
+      tokenUnattributed.input += t.input_tokens
+      tokenUnattributed.output += t.output_tokens
+      return
+    }
+    const proj = projectById[t.project_id]
+    if (!tokenByProject[t.project_id]) {
+      tokenByProject[t.project_id] = {
+        name: proj?.name ?? 'Unknown Project',
+        color: proj?.color ?? '#6b7280',
+        cost: 0, input: 0, output: 0,
+      }
+    }
+    tokenByProject[t.project_id].cost += Number(t.cost_usd ?? 0)
+    tokenByProject[t.project_id].input += t.input_tokens
+    tokenByProject[t.project_id].output += t.output_tokens
+  })
+  const tokenByProjectList = Object.values(tokenByProject).sort((a, b) => b.cost - a.cost)
+
   return (
     <div>
       <div style={{ marginBottom: '28px' }}>
@@ -103,15 +142,14 @@ export default async function MetricsPage() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '12px', marginBottom: '28px' }}>
         {[
           { label: 'Total Spend', value: `$${totalSpend.toFixed(2)}`, color: '#f59e0b' },
-          { label: 'Token Cost', value: `$${totalTokenCost.toFixed(4)}`, color: '#6366f1', sub: 'last 500 events' },
+          { label: 'Token Cost', value: `$${totalTokenCost.toFixed(4)}`, color: '#6366f1' },
           { label: 'Input Tokens', value: totalInputTokens.toLocaleString(), color: '#3b82f6' },
           { label: 'Output Tokens', value: totalOutputTokens.toLocaleString(), color: '#22c55e' },
-          { label: 'Sessions', value: sessions.length, color: '#9ca3af' },
+          { label: 'Sessions', value: String(sessions.length), color: '#9ca3af' },
         ].map((stat, i) => (
           <div key={i} style={{ background: '#111118', border: '1px solid #1e1e2e', borderRadius: '8px', padding: '16px' }}>
             <div style={{ fontSize: '22px', fontWeight: 700, color: stat.color, marginBottom: '4px' }}>{stat.value}</div>
             <div style={{ fontSize: '12px', color: '#9ca3af' }}>{stat.label}</div>
-            {stat.sub && <div style={{ fontSize: '11px', color: '#6b7280', marginTop: '2px' }}>{stat.sub}</div>}
           </div>
         ))}
       </div>
@@ -223,6 +261,91 @@ export default async function MetricsPage() {
           </div>
         </div>
       </div>
+
+      {/* Provider breakdown + Token cost by project */}
+      {tokens.length > 0 && (
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+          {/* Provider breakdown */}
+          <div style={{ background: '#111118', border: '1px solid #1e1e2e', borderRadius: '10px', padding: '20px' }}>
+            <h2 style={{ margin: '0 0 16px', fontSize: '14px', fontWeight: 600, color: '#f0f0f0' }}>Token Cost by Provider</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {providerList.map(([provider, stats]) => {
+                const pct = totalTokenCost > 0 ? Math.round((stats.cost / totalTokenCost) * 100) : 0
+                const providerColors: Record<string, string> = { anthropic: '#d97706', openrouter: '#8b5cf6', google: '#3b82f6' }
+                const color = providerColors[provider] ?? '#6b7280'
+                return (
+                  <div key={provider}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: color }} />
+                        <span style={{ fontSize: '13px', color: '#e5e7eb', fontFamily: 'monospace' }}>{provider}</span>
+                      </div>
+                      <div style={{ textAlign: 'right' }}>
+                        <span style={{ fontSize: '13px', color: '#f0f0f0', fontWeight: 600 }}>${stats.cost.toFixed(4)}</span>
+                        <span style={{ fontSize: '11px', color: '#6b7280', marginLeft: '6px' }}>{pct}%</span>
+                      </div>
+                    </div>
+                    <div style={{ height: '5px', background: '#1e1e2e', borderRadius: '3px', overflow: 'hidden' }}>
+                      <div style={{ height: '100%', width: `${pct}%`, background: color, borderRadius: '3px' }} />
+                    </div>
+                    <div style={{ fontSize: '11px', color: '#6b7280', marginTop: '3px' }}>
+                      {(stats.input + stats.output).toLocaleString()} tokens
+                      ({stats.input.toLocaleString()} in / {stats.output.toLocaleString()} out)
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* Token cost by project */}
+          <div style={{ background: '#111118', border: '1px solid #1e1e2e', borderRadius: '10px', padding: '20px' }}>
+            <h2 style={{ margin: '0 0 16px', fontSize: '14px', fontWeight: 600, color: '#f0f0f0' }}>Token Cost by Project</h2>
+            {tokenByProjectList.length === 0 && tokenUnattributed.cost === 0 ? (
+              <div style={{ fontSize: '13px', color: '#6b7280', fontStyle: 'italic', padding: '20px 0', textAlign: 'center' }}>
+                No project attribution yet — add --project-id to linkbot-logger calls
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {tokenByProjectList.map(item => {
+                  const pct = totalTokenCost > 0 ? Math.round((item.cost / totalTokenCost) * 100) : 0
+                  return (
+                    <div key={item.name}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: item.color }} />
+                          <span style={{ fontSize: '13px', color: '#e5e7eb' }}>{item.name}</span>
+                        </div>
+                        <div style={{ textAlign: 'right' }}>
+                          <span style={{ fontSize: '13px', color: '#f0f0f0', fontWeight: 600 }}>${item.cost.toFixed(4)}</span>
+                          <span style={{ fontSize: '11px', color: '#6b7280', marginLeft: '6px' }}>{pct}%</span>
+                        </div>
+                      </div>
+                      <div style={{ height: '5px', background: '#1e1e2e', borderRadius: '3px', overflow: 'hidden' }}>
+                        <div style={{ height: '100%', width: `${pct}%`, background: item.color, borderRadius: '3px' }} />
+                      </div>
+                    </div>
+                  )
+                })}
+                {tokenUnattributed.cost > 0 && (
+                  <div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#374151' }} />
+                        <span style={{ fontSize: '13px', color: '#6b7280', fontStyle: 'italic' }}>Unattributed</span>
+                      </div>
+                      <span style={{ fontSize: '13px', color: '#6b7280' }}>${tokenUnattributed.cost.toFixed(4)}</span>
+                    </div>
+                    <div style={{ height: '5px', background: '#1e1e2e', borderRadius: '3px', overflow: 'hidden' }}>
+                      <div style={{ height: '100%', width: `${totalTokenCost > 0 ? Math.round((tokenUnattributed.cost / totalTokenCost) * 100) : 0}%`, background: '#374151', borderRadius: '3px' }} />
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Models used */}
       {modelList.length > 0 && (
