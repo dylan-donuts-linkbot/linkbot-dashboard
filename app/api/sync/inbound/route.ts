@@ -85,6 +85,51 @@ export async function POST(request: NextRequest) {
 
   const sync_queue_id = queueItem.id
 
+  // ── Conflict detection (for update operations) ────────────────────────────────
+  let hasConflict = false
+  if (operation === 'update') {
+    const { data: existing, error: fetchError } = await supabase
+      .from(table)
+      .select('*')
+      .eq('id', record_id)
+      .single()
+
+    if (!fetchError && existing) {
+      // Check if record was modified locally after it was last synced from OpenClaw
+      const lastSynced = existing.last_synced_at ? new Date(existing.last_synced_at).getTime() : 0
+      const lastModified = existing.updated_at ? new Date(existing.updated_at).getTime() : 0
+      const isSyncSource = existing.sync_source === 'openclaw'
+
+      if (!isSyncSource && lastModified > lastSynced) {
+        // Local modification detected after last sync from OpenClaw
+        // Check if the incoming payload differs from the current state
+        const payloadKeys = Object.keys(payload).filter(k => k !== 'id' && k !== 'created_at')
+        const hasDifference = payloadKeys.some(key => {
+          const incomingVal = (payload as Record<string, unknown>)[key]
+          const currentVal = existing[key]
+          return JSON.stringify(incomingVal) !== JSON.stringify(currentVal)
+        })
+
+        if (hasDifference) {
+          hasConflict = true
+        }
+      }
+    }
+  }
+
+  if (hasConflict) {
+    // Mark as conflict without applying the update
+    await supabase
+      .from('sync_queue')
+      .update({ status: 'failed', error_message: 'Conflict: local modifications detected', processed_at: new Date().toISOString() })
+      .eq('id', sync_queue_id)
+
+    return NextResponse.json(
+      { error: 'Conflict: local modifications detected', sync_queue_id, conflict: true },
+      { status: 409 }
+    )
+  }
+
   // ── Apply the operation to the target table ────────────────────────────────
   let applyError: string | null = null
 

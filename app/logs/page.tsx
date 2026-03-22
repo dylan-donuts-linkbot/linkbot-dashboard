@@ -1,8 +1,10 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { AgentLog, Project } from '@/types'
+import { AgentLog, ActivityLog, Project } from '@/types'
 import { getSupabase } from '@/lib/supabase'
+
+type LogEntry = (AgentLog & { type: 'agent' }) | (ActivityLog & { type: 'activity' })
 
 const AGENT_COLORS: Record<string, { bg: string; text: string; label: string }> = {
   openclaw:  { bg: '#451a03', text: '#fbbf24', label: 'OpenClaw' },
@@ -11,7 +13,8 @@ const AGENT_COLORS: Record<string, { bg: string; text: string; label: string }> 
   dev:       { bg: '#042f2e', text: '#2dd4bf', label: 'Dev' },
 }
 
-function agentStyle(agent: string) {
+function agentStyle(agent: string | undefined) {
+  if (!agent) return { bg: '#1c1c2e', text: '#9ca3af', label: 'System' }
   return AGENT_COLORS[agent.toLowerCase()] ?? { bg: '#1c1c2e', text: '#9ca3af', label: agent }
 }
 
@@ -24,7 +27,7 @@ function formatTimestamp(iso: string): string {
 }
 
 export default function LogsPage() {
-  const [logs, setLogs] = useState<AgentLog[]>([])
+  const [logs, setLogs] = useState<LogEntry[]>([])
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState<string | null>(null)
@@ -36,11 +39,18 @@ export default function LogsPage() {
     setLoadError(null)
     try {
       const supabase = getSupabase()
-      const [{ data: logsData, error: logsError }, { data: projectsData, error: projectsError }] = await Promise.all([
+      const [
+        { data: agentLogsData, error: agentLogsError },
+        { data: activityLogsData, error: activityLogsError },
+        { data: projectsData, error: projectsError }
+      ] = await Promise.all([
         supabase
           .from('agent_logs')
           .select('*, project:projects(id, name, color)')
-          .order('created_at', { ascending: false })
+          .limit(500),
+        supabase
+          .from('activity_log')
+          .select('*, project:projects(id, name, color)')
           .limit(500),
         supabase
           .from('projects')
@@ -48,13 +58,20 @@ export default function LogsPage() {
           .order('name', { ascending: true }),
       ])
 
-      if (logsError) throw new Error(logsError.message)
+      if (agentLogsError) throw new Error(agentLogsError.message)
+      if (activityLogsError) throw new Error(activityLogsError.message)
       if (projectsError) throw new Error(projectsError.message)
 
-      setLogs((logsData as AgentLog[]) ?? [])
+      // Merge and sort by timestamp (newest first)
+      const merged: LogEntry[] = [
+        ...((agentLogsData as AgentLog[]) ?? []).map(log => ({ ...log, type: 'agent' as const })),
+        ...((activityLogsData as ActivityLog[]) ?? []).map(log => ({ ...log, type: 'activity' as const })),
+      ].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+
+      setLogs(merged)
       setProjects((projectsData as Project[]) ?? [])
     } catch (err) {
-      console.error('Failed to load agent logs:', err)
+      console.error('Failed to load logs:', err)
       setLoadError(err instanceof Error ? err.message : 'Failed to load logs')
     } finally {
       setLoading(false)
@@ -63,12 +80,13 @@ export default function LogsPage() {
 
   useEffect(() => { load() }, [load])
 
-  // Derive available agent names from data for the filter dropdown
-  const agentNames = Array.from(new Set(logs.map(l => l.agent))).sort()
+  // Derive available agent names from agent_logs only
+  const agentNames = Array.from(new Set(logs.filter(l => l.type === 'agent').map((l: any) => l.agent))).sort()
 
   const filtered = logs.filter(log => {
     if (filterProject !== 'all' && log.project_id !== filterProject) return false
-    if (filterAgent !== 'all' && log.agent !== filterAgent) return false
+    if (filterAgent !== 'all' && log.type === 'activity') return false  // Activity logs don't have agents
+    if (filterAgent !== 'all' && log.type === 'agent' && (log as any).agent !== filterAgent) return false
     return true
   })
 
@@ -146,14 +164,16 @@ export default function LogsPage() {
           padding: '60px 20px', textAlign: 'center',
         }}>
           <div style={{ fontSize: '32px', marginBottom: '12px' }}>🤖</div>
-          <div style={{ fontSize: '14px', color: '#6b7280' }}>No agent activity yet</div>
+          <div style={{ fontSize: '14px', color: '#6b7280' }}>No activity yet</div>
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
           {filtered.map((log, i) => {
-            const style = agentStyle(log.agent)
             const isFirst = i === 0
             const isLast = i === filtered.length - 1
+            const isAgent = log.type === 'agent'
+            const style = isAgent ? agentStyle((log as any).agent) : agentStyle(undefined)
+
             return (
               <div
                 key={log.id}
@@ -166,6 +186,7 @@ export default function LogsPage() {
                   gridTemplateColumns: '140px 90px 1fr',
                   gap: '12px',
                   alignItems: 'start',
+                  opacity: isAgent ? 1 : 0.85,
                 }}
               >
                 {/* Timestamp */}
@@ -173,7 +194,7 @@ export default function LogsPage() {
                   {formatTimestamp(log.created_at)}
                 </div>
 
-                {/* Agent badge */}
+                {/* Agent/Activity badge */}
                 <div style={{
                   display: 'inline-flex',
                   alignItems: 'center',
@@ -186,13 +207,15 @@ export default function LogsPage() {
                   color: style.text,
                   whiteSpace: 'nowrap',
                 }}>
-                  {style.label}
+                  {isAgent ? style.label : '📋 Activity'}
                 </div>
 
                 {/* Content */}
                 <div>
                   <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', flexWrap: 'wrap', marginBottom: '2px' }}>
-                    <span style={{ fontSize: '13px', fontWeight: 600, color: '#e5e7eb' }}>{log.action}</span>
+                    <span style={{ fontSize: '13px', fontWeight: 600, color: '#e5e7eb' }}>
+                      {isAgent ? (log as AgentLog).action : (log as ActivityLog).action}
+                    </span>
                     {log.project && (
                       <span style={{ fontSize: '11px', color: '#6b7280' }}>
                         · {log.project.name}
@@ -200,7 +223,7 @@ export default function LogsPage() {
                     )}
                   </div>
                   <div style={{ fontSize: '13px', color: '#9ca3af', lineHeight: 1.5 }}>
-                    {log.summary}
+                    {isAgent ? (log as AgentLog).summary : (log as ActivityLog).detail}
                   </div>
                 </div>
               </div>
