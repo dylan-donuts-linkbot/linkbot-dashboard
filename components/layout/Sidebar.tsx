@@ -24,6 +24,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: '/kanban',    label: 'Kanban',     icon: '⬜' },
   { href: '/metrics',   label: 'Metrics',    icon: '📊' },
   { href: '/activity',  label: 'Activity',   icon: '⚡' },
+  { href: '/logs',      label: 'Agent Logs', icon: '🤖' },
   { href: '/settings',  label: 'Settings',   icon: '⚙️' },
 ]
 
