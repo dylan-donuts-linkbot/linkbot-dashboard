@@ -18,6 +18,11 @@ export interface Project {
   prd_url?: string | null
   assignees?: string[]
   is_system?: boolean
+  // v6 sync fields
+  external_id?: string | null
+  sync_source?: string | null
+  last_synced_at?: string | null
+  sync_status?: string | null
   created_at: string
   updated_at?: string
 }
@@ -36,6 +41,11 @@ export interface Task {
   due_date?: string | null
   instructions?: string | null
   priority_rank?: number | null
+  // v6 sync fields
+  external_id?: string | null
+  sync_source?: string | null
+  last_synced_at?: string | null
+  sync_status?: string | null
   created_at: string
   updated_at: string
   project?: Project
@@ -67,12 +77,46 @@ export interface SpendLog {
   project?: Project
 }
 
+export type SyncOperation = 'insert' | 'update' | 'delete'
+export type SyncStatus = 'pending' | 'processed' | 'failed'
+export type SyncSource = 'local' | 'openclaw'
+
+export interface SyncQueueItem {
+  id: string
+  table_name: string
+  record_id: string
+  operation: SyncOperation
+  payload: Record<string, unknown> | null
+  status: SyncStatus
+  source: SyncSource
+  idempotency_key: string | null
+  retry_count: number
+  error_message: string | null
+  created_at: string
+  processed_at: string | null
+}
+
+export interface AgentLog {
+  id: string
+  project_id: string | null
+  task_id: string | null
+  agent: string
+  action: string
+  summary: string
+  metadata: Record<string, unknown> | null
+  created_at: string
+  project?: Project
+  task?: Task
+}
+
 export interface TokenUsage {
   id: string
   session_id: string | null
   input_tokens: number
   output_tokens: number
   model: string | null
+  provider: string | null   // 'anthropic' | 'openrouter' — first segment of model string
+  project_id: string | null
   cost_usd: number | null
   created_at: string
 }
