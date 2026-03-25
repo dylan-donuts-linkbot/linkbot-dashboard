@@ -1,18 +1,13 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Project, Task } from '@/types'
+import { Project, Task, ProjectType } from '@/types'
 import { supabase } from '@/lib/supabase'
 import ProjectCard from '@/components/projects/ProjectCard'
 import EmptyState from '@/components/shared/EmptyState'
-import TaskModal from '@/components/tasks/TaskModal'
+import ProjectModal from '@/components/ProjectModal'
 import { createProject } from '@/lib/actions'
 import { useRouter } from 'next/navigation'
-
-const PROJECT_COLORS = [
-  '#6366f1', '#3b82f6', '#22c55e', '#f59e0b', '#ef4444',
-  '#8b5cf6', '#ec4899', '#14b8a6', '#f97316', '#6b7280',
-]
 
 type FilterStatus = 'all' | 'active' | 'paused' | 'archived' | 'complete'
 
@@ -24,13 +19,6 @@ export default function ProjectsPage() {
   const [loadError, setLoadError] = useState<string | null>(null)
   const [filterStatus, setFilterStatus] = useState<FilterStatus>('all')
   const [showNewProject, setShowNewProject] = useState(false)
-
-  // New project form state
-  const [newName, setNewName] = useState('')
-  const [newDescription, setNewDescription] = useState('')
-  const [newColor, setNewColor] = useState('#6366f1')
-  const [creating, setCreating] = useState(false)
-  const [createError, setCreateError] = useState<string | null>(null)
 
   useEffect(() => {
     async function load() {
@@ -56,30 +44,26 @@ export default function ProjectsPage() {
     return (p.status ?? 'active') === filterStatus
   })
 
-  async function handleCreateProject() {
-    if (!newName.trim()) return
-    setCreating(true)
-    setCreateError(null)
-    try {
-      await createProject({
-        name: newName.trim(),
-        color: newColor,
-        description: newDescription.trim() || null,
-        status: 'active',
-      })
-      setNewName('')
-      setNewDescription('')
-      setNewColor('#6366f1')
-      setShowNewProject(false)
-      router.refresh()
-      const { data } = await supabase.from('projects').select('*').order('created_at', { ascending: true })
-      setProjects((data as Project[]) ?? [])
-    } catch (error) {
-      console.error('Failed to create project:', error)
-      setCreateError(error instanceof Error ? error.message : 'Failed to create project')
-    } finally {
-      setCreating(false)
-    }
+  async function handleCreateProject(data: {
+    name: string
+    description: string | null
+    color: string
+    project_type: ProjectType
+    type_config: Record<string, unknown>
+    stack_info: Record<string, unknown>
+  }) {
+    await createProject({
+      name: data.name,
+      color: data.color,
+      description: data.description,
+      status: 'active',
+      project_type: data.project_type,
+      type_config: data.type_config,
+      stack_info: data.stack_info,
+    })
+    router.refresh()
+    const { data: projectsData } = await supabase.from('projects').select('*').order('created_at', { ascending: true })
+    setProjects((projectsData as Project[]) ?? [])
   }
 
   const taskCounts = (projectId: string) => ({
@@ -108,6 +92,7 @@ export default function ProjectsPage() {
           <span style={{ flex: 1 }}>{loadError}</span>
         </div>
       )}
+
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '24px' }}>
         <div>
@@ -117,17 +102,10 @@ export default function ProjectsPage() {
         <button
           onClick={() => setShowNewProject(true)}
           style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            padding: '9px 16px',
-            background: '#6366f1',
-            border: 'none',
-            borderRadius: '7px',
-            fontSize: '13px',
-            fontWeight: 600,
-            color: '#fff',
-            cursor: 'pointer',
+            display: 'flex', alignItems: 'center', gap: '6px',
+            padding: '9px 16px', background: '#6366f1',
+            border: 'none', borderRadius: '7px',
+            fontSize: '13px', fontWeight: 600, color: '#fff', cursor: 'pointer',
           }}
         >
           + New Project
@@ -141,15 +119,11 @@ export default function ProjectsPage() {
             key={f}
             onClick={() => setFilterStatus(f)}
             style={{
-              padding: '5px 12px',
-              fontSize: '12px',
-              fontWeight: 500,
+              padding: '5px 12px', fontSize: '12px', fontWeight: 500,
               background: filterStatus === f ? '#1e1e2e' : 'transparent',
               color: filterStatus === f ? '#f0f0f0' : '#6b7280',
               border: filterStatus === f ? '1px solid #2e2e3e' : '1px solid transparent',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              textTransform: 'capitalize',
+              borderRadius: '6px', cursor: 'pointer', textTransform: 'capitalize',
             }}
           >
             {f} {f !== 'all' && `(${projects.filter(p => (p.status ?? 'active') === f).length})`}
@@ -167,14 +141,9 @@ export default function ProjectsPage() {
             <button
               onClick={() => setShowNewProject(true)}
               style={{
-                padding: '8px 16px',
-                background: '#6366f1',
-                border: 'none',
-                borderRadius: '6px',
-                color: '#fff',
-                fontSize: '13px',
-                fontWeight: 600,
-                cursor: 'pointer',
+                padding: '8px 16px', background: '#6366f1',
+                border: 'none', borderRadius: '6px',
+                color: '#fff', fontSize: '13px', fontWeight: 600, cursor: 'pointer',
               }}
             >
               + New Project
@@ -201,141 +170,12 @@ export default function ProjectsPage() {
         </div>
       )}
 
-      {/* New Project Modal */}
       {showNewProject && (
-        <div
-          onClick={() => setShowNewProject(false)}
-          style={{
-            position: 'fixed', inset: 0,
-            background: 'rgba(0,0,0,0.7)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            zIndex: 200, padding: '24px',
-          }}
-        >
-          <div
-            onClick={e => e.stopPropagation()}
-            style={{
-              background: '#111118',
-              border: '1px solid #1e1e2e',
-              borderRadius: '10px',
-              width: '100%',
-              maxWidth: '480px',
-              padding: '24px',
-            }}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 600, color: '#f0f0f0' }}>New Project</h2>
-              <button
-                onClick={() => setShowNewProject(false)}
-                style={{ background: 'none', border: 'none', color: '#6b7280', fontSize: '20px', cursor: 'pointer' }}
-              >
-                ×
-              </button>
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-              <div>
-                <label style={labelStyle}>Name *</label>
-                <input
-                  value={newName}
-                  onChange={e => setNewName(e.target.value)}
-                  placeholder="Project name"
-                  autoFocus
-                  onKeyDown={e => { if (e.key === 'Enter') handleCreateProject() }}
-                  style={inputStyle}
-                />
-              </div>
-
-              <div>
-                <label style={labelStyle}>Description</label>
-                <textarea
-                  value={newDescription}
-                  onChange={e => setNewDescription(e.target.value)}
-                  placeholder="What is this project about?"
-                  rows={3}
-                  style={{ ...inputStyle, resize: 'vertical' }}
-                />
-              </div>
-
-              <div>
-                <label style={labelStyle}>Color</label>
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                  {PROJECT_COLORS.map(c => (
-                    <button
-                      key={c}
-                      onClick={() => setNewColor(c)}
-                      style={{
-                        width: '28px',
-                        height: '28px',
-                        borderRadius: '50%',
-                        background: c,
-                        border: newColor === c ? '3px solid #fff' : '2px solid transparent',
-                        cursor: 'pointer',
-                        padding: 0,
-                      }}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {createError && (
-              <div style={{
-                marginTop: '12px', padding: '9px 12px',
-                background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)',
-                borderRadius: '6px', fontSize: '12px', color: '#f87171',
-              }}>
-                {createError}
-              </div>
-            )}
-
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '24px' }}>
-              <button className="btn-ghost" onClick={() => setShowNewProject(false)}>Cancel</button>
-              <button
-                onClick={handleCreateProject}
-                disabled={creating || !newName.trim()}
-                style={{
-                  background: '#6366f1',
-                  border: 'none',
-                  borderRadius: '6px',
-                  padding: '8px 16px',
-                  fontSize: '13px',
-                  fontWeight: 600,
-                  color: '#fff',
-                  cursor: 'pointer',
-                  opacity: creating || !newName.trim() ? 0.6 : 1,
-                }}
-              >
-                {creating ? 'Creating...' : 'Create Project'}
-              </button>
-            </div>
-          </div>
-        </div>
+        <ProjectModal
+          onSave={handleCreateProject}
+          onClose={() => setShowNewProject(false)}
+        />
       )}
     </div>
   )
-}
-
-// Suppress unused import warning — TaskModal used for type reference
-void (TaskModal)
-
-const labelStyle: React.CSSProperties = {
-  display: 'block',
-  fontSize: '11px',
-  color: '#9ca3af',
-  fontWeight: 600,
-  marginBottom: '6px',
-  textTransform: 'uppercase',
-  letterSpacing: '0.05em',
-}
-
-const inputStyle: React.CSSProperties = {
-  background: '#0a0a0f',
-  border: '1px solid #1e1e2e',
-  borderRadius: '6px',
-  padding: '8px 10px',
-  fontSize: '13px',
-  color: '#e5e7eb',
-  width: '100%',
-  outline: 'none',
 }

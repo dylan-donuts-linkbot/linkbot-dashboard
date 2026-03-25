@@ -17,6 +17,9 @@ export async function createProject(data: {
   prd_content?: string | null
   prd_url?: string | null
   assignees?: string[]
+  project_type?: string
+  type_config?: Record<string, unknown> | null
+  stack_info?: Record<string, unknown> | null
 }) {
   const supabase = await createServerClient()
   const { data: project, error } = await supabase

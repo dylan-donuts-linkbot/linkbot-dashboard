@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { Project } from '@/types'
 import StatusBadge from '@/components/shared/StatusBadge'
 import ColorDot from '@/components/shared/ColorDot'
+import { PROJECT_TYPE_LABELS, PROJECT_TYPE_COLORS } from '@/lib/project-types-config'
 
 interface ProjectCardProps {
   project: Project
@@ -103,6 +104,19 @@ export default function ProjectCard({ project, taskCount = 0, doneCount = 0 }: P
 
       {/* Metadata row */}
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', alignItems: 'center' }}>
+        {project.project_type && (
+          <span style={{
+            fontSize: '11px',
+            fontWeight: 600,
+            color: PROJECT_TYPE_COLORS[project.project_type],
+            background: `${PROJECT_TYPE_COLORS[project.project_type]}18`,
+            padding: '2px 8px',
+            borderRadius: '4px',
+            letterSpacing: '0.02em',
+          }}>
+            {PROJECT_TYPE_LABELS[project.project_type]}
+          </span>
+        )}
         {project.stage && (
           <span style={{
             fontSize: '11px',

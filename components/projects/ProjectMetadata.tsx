@@ -1,9 +1,16 @@
 'use client'
 
 import { useState } from 'react'
-import { Project, ProjectStatus } from '@/types'
+import { Project, ProjectStatus, ProjectType } from '@/types'
 import { updateProject } from '@/lib/actions'
 import { useRouter } from 'next/navigation'
+import {
+  PROJECT_TYPE_LABELS,
+  PROJECT_TYPE_DESCRIPTIONS,
+  PROJECT_TYPE_COLORS,
+  DEFAULT_TYPE_CONFIGS,
+  getAllProjectTypes,
+} from '@/lib/project-types-config'
 
 interface ProjectMetadataProps {
   project: Project
@@ -33,6 +40,8 @@ export default function ProjectMetadata({ project }: ProjectMetadataProps) {
   const [vercelProject, setVercelProject] = useState(project.vercel_project ?? '')
   const [liveUrl, setLiveUrl] = useState(project.live_url ?? '')
   const [assignees, setAssignees] = useState((project.assignees ?? []).join(', '))
+  const [projectType, setProjectType] = useState<ProjectType>(project.project_type ?? 'web_app')
+  const [typeConfigWarning, setTypeConfigWarning] = useState(false)
 
   async function handleSave() {
     setSaving(true)
@@ -48,6 +57,7 @@ export default function ProjectMetadata({ project }: ProjectMetadataProps) {
         vercel_project: vercelProject || null,
         live_url: liveUrl || null,
         assignees: assignees ? assignees.split(',').map(s => s.trim()).filter(Boolean) : [],
+        project_type: projectType,
       })
       setEditing(false)
       router.refresh()
@@ -69,6 +79,8 @@ export default function ProjectMetadata({ project }: ProjectMetadataProps) {
     setVercelProject(project.vercel_project ?? '')
     setLiveUrl(project.live_url ?? '')
     setAssignees((project.assignees ?? []).join(', '))
+    setProjectType(project.project_type ?? 'web_app')
+    setTypeConfigWarning(false)
     setEditing(false)
   }
 
@@ -192,6 +204,27 @@ export default function ProjectMetadata({ project }: ProjectMetadataProps) {
             </div>
           </FieldRow>
 
+          <FieldRow label="Project Type">
+            <select
+              value={projectType}
+              onChange={e => {
+                const newType = e.target.value as ProjectType
+                if (newType !== projectType) setTypeConfigWarning(true)
+                setProjectType(newType)
+              }}
+              style={inputStyle}
+            >
+              {getAllProjectTypes().map(t => (
+                <option key={t} value={t}>{PROJECT_TYPE_LABELS[t]}</option>
+              ))}
+            </select>
+            {typeConfigWarning && (
+              <div style={{ fontSize: '11px', color: '#f59e0b', marginTop: '4px' }}>
+                ⚠ Type changed. type_config and stack_info will not be updated automatically — edit them in the JSON fields if needed.
+              </div>
+            )}
+          </FieldRow>
+
           <FieldRow label="GitHub Repo (owner/repo)">
             <input
               value={githubRepo}
@@ -230,6 +263,23 @@ export default function ProjectMetadata({ project }: ProjectMetadataProps) {
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          {project.project_type && (
+            <MetaRow label="Type">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                <span style={{
+                  fontSize: '12px', fontWeight: 600,
+                  color: PROJECT_TYPE_COLORS[project.project_type],
+                  background: `${PROJECT_TYPE_COLORS[project.project_type]}18`,
+                  padding: '2px 8px', borderRadius: '4px', display: 'inline-block',
+                }}>
+                  {PROJECT_TYPE_LABELS[project.project_type]}
+                </span>
+                <span style={{ fontSize: '12px', color: '#6b7280' }}>
+                  {PROJECT_TYPE_DESCRIPTIONS[project.project_type]}
+                </span>
+              </div>
+            </MetaRow>
+          )}
           <MetaRow label="Status">
             <span style={{ fontSize: '13px', color: '#e5e7eb', textTransform: 'capitalize' }}>
               {project.status ?? 'active'}
@@ -286,7 +336,21 @@ export default function ProjectMetadata({ project }: ProjectMetadataProps) {
               </div>
             </MetaRow>
           )}
-          {!project.stage && !project.github_repo && !project.vercel_project && !project.live_url && (
+          {project.type_config && Object.keys(project.type_config).length > 0 && (
+            <MetaRow label="Config">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                {Object.entries(project.type_config).map(([k, v]) => (
+                  <div key={k} style={{ fontSize: '12px', display: 'flex', gap: '6px' }}>
+                    <span style={{ color: '#6b7280', minWidth: '120px' }}>{k}</span>
+                    <span style={{ color: '#9ca3af' }}>
+                      {typeof v === 'boolean' ? (v ? '✓' : '✗') : String(v)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </MetaRow>
+          )}
+          {!project.stage && !project.github_repo && !project.vercel_project && !project.live_url && !project.project_type && (
             <div style={{ fontSize: '13px', color: '#6b7280', fontStyle: 'italic' }}>
               No metadata yet. Click Edit to add details.
             </div>
