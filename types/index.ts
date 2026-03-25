@@ -1,6 +1,7 @@
 export type Priority = 'low' | 'medium' | 'high' | 'urgent'
 export type TaskStatus = 'backlog' | 'in_progress' | 'in_review' | 'done'
 export type ProjectStatus = 'active' | 'paused' | 'archived' | 'complete'
+export type ProjectType = 'web_app' | 'ios_app' | 'macos_app' | 'ecommerce' | 'pipeline' | 'content'
 
 export interface Project {
   id: string
@@ -18,6 +19,10 @@ export interface Project {
   prd_url?: string | null
   assignees?: string[]
   is_system?: boolean
+  // v8 project type fields
+  project_type?: ProjectType
+  type_config?: Record<string, unknown> | null
+  stack_info?: Record<string, unknown> | null
   // v6 sync fields
   external_id?: string | null
   sync_source?: string | null
