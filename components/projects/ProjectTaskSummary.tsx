@@ -27,14 +27,14 @@ export default function ProjectTaskSummary({ project, tasks }: ProjectTaskSummar
 
   return (
     <div style={{
-      background: '#111118',
-      border: '1px solid #1e1e2e',
+      background: 'var(--bg-card)',
+      border: '1px solid var(--border-card)',
       borderRadius: '10px',
       padding: '20px',
       marginBottom: '20px',
     }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-        <h2 style={{ margin: 0, fontSize: '14px', fontWeight: 600, color: '#f0f0f0' }}>Tasks</h2>
+        <h2 style={{ margin: 0, fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)' }}>Tasks</h2>
         <Link
           href={`/kanban?project=${project.id}`}
           style={{
@@ -50,14 +50,14 @@ export default function ProjectTaskSummary({ project, tasks }: ProjectTaskSummar
       {/* Status counts */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px', marginBottom: '16px' }}>
         {([
-          { key: 'backlog', label: 'Backlog', color: '#6b7280' },
+          { key: 'backlog', label: 'Backlog', color: 'var(--text-muted)' },
           { key: 'in_progress', label: 'In Progress', color: '#3b82f6' },
           { key: 'in_review', label: 'In Review', color: '#eab308' },
           { key: 'done', label: 'Done', color: '#22c55e' },
         ] as const).map(col => (
           <div key={col.key} style={{
-            background: '#0a0a0f',
-            border: '1px solid #1e1e2e',
+            background: 'var(--bg-deep)',
+            border: '1px solid var(--border-card)',
             borderRadius: '6px',
             padding: '10px',
             textAlign: 'center',
@@ -65,7 +65,7 @@ export default function ProjectTaskSummary({ project, tasks }: ProjectTaskSummar
             <div style={{ fontSize: '20px', fontWeight: 700, color: col.color }}>
               {statusCounts[col.key]}
             </div>
-            <div style={{ fontSize: '11px', color: '#6b7280', marginTop: '2px' }}>
+            <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '2px' }}>
               {col.label}
             </div>
           </div>
@@ -87,21 +87,21 @@ export default function ProjectTaskSummary({ project, tasks }: ProjectTaskSummar
               alignItems: 'center',
               gap: '10px',
               padding: '10px 12px',
-              background: '#0a0a0f',
-              border: '1px solid #1e1e2e',
+              background: 'var(--bg-deep)',
+              border: '1px solid var(--border-card)',
               borderRadius: '6px',
             }}>
               <div style={{
                 width: '3px',
                 height: '18px',
-                background: PRIORITY_COLORS[task.priority] ?? '#6b7280',
+                background: PRIORITY_COLORS[task.priority] ?? 'var(--text-muted)',
                 borderRadius: '2px',
                 flexShrink: 0,
               }} />
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{
                   fontSize: '13px',
-                  color: '#e5e7eb',
+                  color: 'var(--text-light)',
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                   whiteSpace: 'nowrap',
@@ -109,7 +109,7 @@ export default function ProjectTaskSummary({ project, tasks }: ProjectTaskSummar
                   {task.title}
                 </div>
                 {task.assignee && (
-                  <div style={{ fontSize: '11px', color: '#6b7280', marginTop: '2px' }}>
+                  <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '2px' }}>
                     {task.assignee}
                   </div>
                 )}
@@ -118,7 +118,7 @@ export default function ProjectTaskSummary({ project, tasks }: ProjectTaskSummar
             </div>
           ))}
           {tasks.length > 8 && (
-            <div style={{ fontSize: '12px', color: '#6b7280', textAlign: 'center', padding: '6px' }}>
+            <div style={{ fontSize: '12px', color: 'var(--text-muted)', textAlign: 'center', padding: '6px' }}>
               +{tasks.length - 8} more tasks
             </div>
           )}

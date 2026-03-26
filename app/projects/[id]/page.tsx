@@ -56,7 +56,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
       <div style={{ marginBottom: '20px' }}>
         <Link
           href="/projects"
-          style={{ fontSize: '13px', color: '#6b7280', textDecoration: 'none' }}
+          style={{ fontSize: '13px', color: 'var(--text-muted)', textDecoration: 'none' }}
         >
           ← Projects
         </Link>
@@ -81,7 +81,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
         {/* Activity sidebar */}
         <div style={{ position: 'sticky', top: '20px' }}>
           <div style={{ marginBottom: '12px' }}>
-            <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 700, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+            <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
               Activity
             </h3>
           </div>

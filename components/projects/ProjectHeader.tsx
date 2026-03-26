@@ -11,8 +11,8 @@ interface ProjectHeaderProps {
 export default function ProjectHeader({ project }: ProjectHeaderProps) {
   return (
     <div style={{
-      background: '#111118',
-      border: '1px solid #1e1e2e',
+      background: 'var(--bg-card)',
+      border: '1px solid var(--border-card)',
       borderRadius: '10px',
       padding: '24px 28px',
       marginBottom: '20px',
@@ -46,7 +46,7 @@ export default function ProjectHeader({ project }: ProjectHeaderProps) {
 
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', marginBottom: '6px' }}>
-            <h1 style={{ margin: 0, fontSize: '22px', fontWeight: 700, color: '#f0f0f0' }}>
+            <h1 style={{ margin: 0, fontSize: '22px', fontWeight: 700, color: 'var(--text-primary)' }}>
               {project.name}
             </h1>
             <StatusBadge status={project.status ?? 'active'} size="md" />
@@ -68,7 +68,7 @@ export default function ProjectHeader({ project }: ProjectHeaderProps) {
             <p style={{
               margin: '0 0 8px',
               fontSize: '14px',
-              color: '#9ca3af',
+              color: 'var(--text-secondary)',
               lineHeight: 1.6,
               maxWidth: '600px',
             }}>
@@ -78,8 +78,8 @@ export default function ProjectHeader({ project }: ProjectHeaderProps) {
 
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginTop: '8px' }}>
             {project.stage && (
-              <span style={{ fontSize: '12px', color: '#9ca3af' }}>
-                Stage: <strong style={{ color: '#e5e7eb' }}>{project.stage}</strong>
+              <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
+                Stage: <strong style={{ color: 'var(--text-light)' }}>{project.stage}</strong>
               </span>
             )}
             {project.github_repo && (
@@ -87,15 +87,15 @@ export default function ProjectHeader({ project }: ProjectHeaderProps) {
                 href={`https://github.com/${project.github_repo}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{ fontSize: '12px', color: '#9ca3af', textDecoration: 'none' }}
-                onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = '#f0f0f0' }}
-                onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = '#9ca3af' }}
+                style={{ fontSize: '12px', color: 'var(--text-secondary)', textDecoration: 'none' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = 'var(--text-primary)' }}
+                onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = 'var(--text-secondary)' }}
               >
                 📦 {project.github_repo}
               </a>
             )}
             {project.vercel_project && (
-              <span style={{ fontSize: '12px', color: '#9ca3af' }}>
+              <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
                 ▲ {project.vercel_project}
               </span>
             )}

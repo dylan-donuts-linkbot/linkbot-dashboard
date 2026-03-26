@@ -29,7 +29,7 @@ export default function ContextModal({ project, onClose }: ContextModalProps) {
       <div
         onClick={e => e.stopPropagation()}
         style={{
-          background: '#171717',
+          background: 'var(--bg-card)',
           border: `1px solid ${project.color}44`,
           borderRadius: '10px',
           width: '100%',
@@ -43,7 +43,7 @@ export default function ContextModal({ project, onClose }: ContextModalProps) {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: project.color, flexShrink: 0 }} />
-            <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 600, color: '#f0f0f0' }}>
+            <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 600, color: 'var(--text-primary)' }}>
               {project.name}
             </h2>
             <span style={{ fontSize: '12px', color: '#555' }}>Project Context</span>
@@ -60,7 +60,7 @@ export default function ContextModal({ project, onClose }: ContextModalProps) {
           flex: 1,
           overflowY: 'auto',
           background: '#111',
-          border: '1px solid #2a2a2a',
+          border: '1px solid var(--border)',
           borderRadius: '6px',
           padding: '16px',
         }}>

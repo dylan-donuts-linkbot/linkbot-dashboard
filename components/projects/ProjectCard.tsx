@@ -18,8 +18,8 @@ export default function ProjectCard({ project, taskCount = 0, doneCount = 0 }: P
       href={`/projects/${project.id}`}
       style={{
         display: 'block',
-        background: '#111118',
-        border: '1px solid #1e1e2e',
+        background: 'var(--bg-card)',
+        border: '1px solid var(--border-card)',
         borderRadius: '10px',
         padding: '20px',
         textDecoration: 'none',
@@ -34,7 +34,7 @@ export default function ProjectCard({ project, taskCount = 0, doneCount = 0 }: P
       }}
       onMouseLeave={e => {
         const el = e.currentTarget as HTMLAnchorElement
-        el.style.borderColor = '#1e1e2e'
+        el.style.borderColor = 'var(--border-card)'
         el.style.transform = 'translateY(0)'
       }}
     >
@@ -55,7 +55,7 @@ export default function ProjectCard({ project, taskCount = 0, doneCount = 0 }: P
           <span style={{
             fontSize: '15px',
             fontWeight: 700,
-            color: '#f0f0f0',
+            color: 'var(--text-primary)',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
@@ -70,7 +70,7 @@ export default function ProjectCard({ project, taskCount = 0, doneCount = 0 }: P
       {project.description && (
         <div style={{
           fontSize: '13px',
-          color: '#9ca3af',
+          color: 'var(--text-secondary)',
           lineHeight: 1.5,
           marginBottom: '14px',
           display: '-webkit-box',
@@ -86,7 +86,7 @@ export default function ProjectCard({ project, taskCount = 0, doneCount = 0 }: P
       <div style={{ marginBottom: '12px' }}>
         <div style={{
           height: '4px',
-          background: '#1e1e2e',
+          background: 'var(--bg-track)',
           borderRadius: '2px',
           overflow: 'hidden',
         }}>
@@ -97,7 +97,7 @@ export default function ProjectCard({ project, taskCount = 0, doneCount = 0 }: P
             borderRadius: '2px',
           }} />
         </div>
-        <div style={{ fontSize: '11px', color: '#6b7280', marginTop: '4px' }}>
+        <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '4px' }}>
           {doneCount}/{taskCount} tasks done
         </div>
       </div>
@@ -120,8 +120,8 @@ export default function ProjectCard({ project, taskCount = 0, doneCount = 0 }: P
         {project.stage && (
           <span style={{
             fontSize: '11px',
-            color: '#9ca3af',
-            background: '#1e1e2e',
+            color: 'var(--text-secondary)',
+            background: 'var(--bg-active)',
             padding: '2px 8px',
             borderRadius: '4px',
           }}>
@@ -131,7 +131,7 @@ export default function ProjectCard({ project, taskCount = 0, doneCount = 0 }: P
         {project.github_repo && (
           <span style={{
             fontSize: '11px',
-            color: '#6b7280',
+            color: 'var(--text-muted)',
             display: 'flex',
             alignItems: 'center',
             gap: '3px',
@@ -142,7 +142,7 @@ export default function ProjectCard({ project, taskCount = 0, doneCount = 0 }: P
         {project.live_url && (
           <span style={{
             fontSize: '11px',
-            color: '#6b7280',
+            color: 'var(--text-muted)',
             display: 'flex',
             alignItems: 'center',
             gap: '3px',

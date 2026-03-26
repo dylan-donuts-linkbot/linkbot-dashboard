@@ -19,9 +19,9 @@ export default function EmptyState({ icon, title, description, action }: EmptySt
       {icon && (
         <div style={{ fontSize: '32px', marginBottom: '4px' }}>{icon}</div>
       )}
-      <div style={{ fontSize: '15px', fontWeight: 600, color: '#e5e7eb' }}>{title}</div>
+      <div style={{ fontSize: '15px', fontWeight: 600, color: 'var(--text-light)' }}>{title}</div>
       {description && (
-        <div style={{ fontSize: '13px', color: '#6b7280', maxWidth: '320px', lineHeight: 1.6 }}>
+        <div style={{ fontSize: '13px', color: 'var(--text-muted)', maxWidth: '320px', lineHeight: 1.6 }}>
           {description}
         </div>
       )}

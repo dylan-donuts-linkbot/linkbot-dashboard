@@ -114,8 +114,8 @@ export default function KanbanBoard({ tasks, projects, activeProject, onTasksCha
                     <span style={{
                       fontSize: '11px',
                       color: '#555',
-                      background: '#1e1e1e',
-                      border: '1px solid #2a2a2a',
+                      background: 'var(--bg-hover)',
+                      border: '1px solid var(--border)',
                       borderRadius: '3px',
                       padding: '1px 6px',
                     }}>
@@ -126,7 +126,7 @@ export default function KanbanBoard({ tasks, projects, activeProject, onTasksCha
                     onClick={() => openNew(col.id)}
                     style={{
                       background: 'none',
-                      border: '1px solid #2a2a2a',
+                      border: '1px solid var(--border)',
                       color: '#555',
                       borderRadius: '4px',
                       padding: '2px 6px',

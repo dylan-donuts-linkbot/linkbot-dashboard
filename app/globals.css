@@ -1,22 +1,81 @@
 @import "tailwindcss";
 
+/* ── Light mode (default) ───────────────────────────────────────────── */
 :root {
-  --bg-base: #0f0f0f;
-  --bg-card: #171717;
-  --bg-hover: #1f1f1f;
-  --border: #2a2a2a;
-  --border-subtle: #222222;
-  --text-primary: #f0f0f0;
-  --text-secondary: #888888;
-  --text-muted: #555555;
-  --accent: #3b82f6;
-  --accent-hover: #2563eb;
+  /* Backgrounds */
+  --bg-base: #f8fafc;
+  --bg-card: #ffffff;
+  --bg-surface: #f1f5f9;
+  --bg-hover: #f1f5f9;
+  --bg-active: #e0e7ff;
+  --bg-deep: #f8fafc;
+
+  /* Borders */
+  --border: #e2e8f0;
+  --border-subtle: #f1f5f9;
+  --border-card: #e2e8f0;
+
+  /* Text */
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  --text-light: #334155;
+
+  /* Accent - same in both modes */
+  --accent: #6366f1;
+  --accent-hover: #4f46e5;
+  --accent-blue: #3b82f6;
+  --accent-blue-hover: #2563eb;
+
+  /* Priority */
   --priority-low: #22c55e;
   --priority-medium: #f59e0b;
   --priority-high: #f97316;
   --priority-urgent: #ef4444;
+
+  /* Sidebar */
+  --sidebar-bg: #ffffff;
+  --sidebar-border: #e2e8f0;
+
+  /* Progress/chart tracks */
+  --bg-track: #e5e7eb;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+  --shadow-lg: 0 10px 30px rgba(0,0,0,0.12);
 }
 
+/* ── Dark mode ──────────────────────────────────────────────────────── */
+.dark {
+  --bg-base: #0f172a;
+  --bg-card: #111118;
+  --bg-surface: #0d0d14;
+  --bg-hover: #1f1f2e;
+  --bg-active: #1e1e2e;
+  --bg-deep: #0a0a0f;
+
+  --border: #2a2a3a;
+  --border-subtle: #1e1e2e;
+  --border-card: #1e1e2e;
+
+  --text-primary: #f0f0f0;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+  --text-light: #e5e7eb;
+
+  --sidebar-bg: #0d0d14;
+  --sidebar-border: #1e1e2e;
+
+  /* Progress/chart tracks */
+  --bg-track: #1e1e2e;
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+  --shadow-lg: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+/* ── Reset ──────────────────────────────────────────────────────────── */
 * {
   box-sizing: border-box;
 }
@@ -30,8 +89,10 @@ body {
   line-height: 1.5;
   margin: 0;
   padding: 0;
+  transition: background-color 0.2s, color 0.2s;
 }
 
+/* ── Scrollbar ──────────────────────────────────────────────────────── */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -40,19 +101,20 @@ body {
   background: var(--bg-base);
 }
 ::-webkit-scrollbar-thumb {
-  background: #333;
+  background: var(--border);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #444;
+  background: var(--text-muted);
 }
 
+/* ── Form elements ──────────────────────────────────────────────────── */
 input,
 textarea,
 select {
-  background: var(--bg-base);
+  background: var(--bg-deep);
   color: var(--text-primary);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-card);
   border-radius: 6px;
   padding: 8px 10px;
   font-size: 14px;
@@ -65,14 +127,19 @@ textarea:focus,
 select:focus {
   border-color: var(--accent);
 }
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-muted);
+}
 
+/* ── Buttons ────────────────────────────────────────────────────────── */
 button {
   cursor: pointer;
   font-size: 13px;
   font-weight: 500;
   border-radius: 6px;
   border: none;
-  transition: background 0.15s, opacity 0.15s;
+  transition: background 0.15s, opacity 0.15s, color 0.15s;
 }
 
 .btn-primary {
@@ -105,15 +172,15 @@ button {
   background: rgba(239, 68, 68, 0.1);
 }
 
+/* ── Cards ──────────────────────────────────────────────────────────── */
 .card {
   background: var(--bg-card);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-card);
   border-radius: 8px;
 }
 
-/* ── Responsive layout ─────────────────────────────────────────────── */
+/* ── Responsive layout ──────────────────────────────────────────────── */
 
-/* Main content area */
 .main-content {
   flex: 1;
   margin-left: 240px;
@@ -122,18 +189,18 @@ button {
   min-height: 100vh;
 }
 
-/* Hamburger button — hidden on desktop, shown on mobile */
+/* Hamburger button */
 .mobile-menu-btn {
   display: none;
   position: fixed;
   top: 14px;
   left: 14px;
   z-index: 200;
-  background: #111118;
-  border: 1px solid #1e1e2e;
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
   border-radius: 6px;
   padding: 10px 12px;
-  color: #f0f0f0;
+  color: var(--text-primary);
   cursor: pointer;
   align-items: center;
   justify-content: center;
@@ -142,40 +209,35 @@ button {
   min-height: 44px;
 }
 
-/* Sidebar overlay (backdrop) — hidden on desktop */
+/* Sidebar overlay */
 .sidebar-overlay {
   display: none;
 }
 
-/* Sidebar drawer — always visible on desktop */
+/* Sidebar drawer */
 .sidebar-drawer {
   transition: transform 0.25s ease;
 }
 
 @media (max-width: 1023px) {
-  /* Show hamburger */
   .mobile-menu-btn {
     display: flex;
   }
 
-  /* Main content: no left margin, padding for hamburger */
   .main-content {
     margin-left: 0 !important;
     padding: 16px;
     padding-top: 68px;
   }
 
-  /* Sidebar slides off-screen by default on mobile */
   .sidebar-drawer {
     transform: translateX(-100%);
   }
 
-  /* Sidebar slides in when open */
   .sidebar-drawer.open {
     transform: translateX(0);
   }
 
-  /* Backdrop visible when open */
   .sidebar-overlay {
     display: block;
     position: fixed;
@@ -186,7 +248,6 @@ button {
 }
 
 @media (min-width: 1024px) {
-  /* Hide hamburger, always show sidebar */
   .mobile-menu-btn {
     display: none !important;
   }
@@ -196,7 +257,7 @@ button {
   }
 }
 
-/* Touch-friendly minimum tap targets */
+/* Touch-friendly targets */
 @media (max-width: 1023px) {
   .touch-target {
     min-height: 44px;
@@ -204,7 +265,7 @@ button {
   }
 }
 
-/* Responsive project grid */
+/* ── Project grid ───────────────────────────────────────────────────── */
 .projects-grid {
   display: grid;
   gap: 16px;
@@ -223,7 +284,7 @@ button {
   }
 }
 
-/* Responsive page header */
+/* ── Page header ────────────────────────────────────────────────────── */
 @media (max-width: 639px) {
   .page-header-row {
     flex-direction: column;
@@ -237,7 +298,6 @@ button {
     justify-content: center;
   }
 
-  /* Filter tabs scroll on mobile */
   .filter-tabs {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
@@ -251,7 +311,7 @@ button {
   }
 }
 
-/* Responsive metrics grids */
+/* ── Metrics grids ──────────────────────────────────────────────────── */
 .metrics-stats-grid {
   display: grid;
   gap: 12px;
@@ -282,7 +342,7 @@ button {
   }
 }
 
-/* Tasks page: quick complete button */
+/* ── Tasks ──────────────────────────────────────────────────────────── */
 .task-complete-btn {
   min-width: 44px;
   min-height: 44px;
@@ -292,7 +352,6 @@ button {
   justify-content: center;
 }
 
-/* My tasks filter bar */
 @media (max-width: 639px) {
   .tasks-filter-bar {
     flex-direction: column;
@@ -317,11 +376,11 @@ button {
   }
 }
 
-/* Kanban board: horizontal scroll on mobile */
+/* ── Kanban ─────────────────────────────────────────────────────────── */
 .kanban-grid-wrapper {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  margin: 0 -16px; /* bleed to edges */
+  margin: 0 -16px;
   padding: 0 16px;
 }
 
@@ -339,7 +398,7 @@ button {
   }
 }
 
-/* Modal mobile optimization */
+/* ── Modals ─────────────────────────────────────────────────────────── */
 @media (max-width: 639px) {
   .modal-container {
     padding: 0 !important;
@@ -365,4 +424,25 @@ button {
     display: flex;
     align-items: center;
   }
+}
+
+/* ── Theme toggle button ────────────────────────────────────────────── */
+.theme-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+}
+.theme-toggle-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  border-color: var(--text-muted);
 }

@@ -70,7 +70,7 @@ export default function QuickAddTask({ projects, defaultProjectId, defaultStatus
 
   return (
     <div style={{
-      background: '#111118',
+      background: 'var(--bg-card)',
       border: '1px solid #6366f144',
       borderRadius: '8px',
       padding: '14px',
@@ -88,12 +88,12 @@ export default function QuickAddTask({ projects, defaultProjectId, defaultStatus
           if (e.key === 'Escape') setOpen(false)
         }}
         style={{
-          background: '#0a0a0f',
-          border: '1px solid #1e1e2e',
+          background: 'var(--bg-deep)',
+          border: '1px solid var(--border-card)',
           borderRadius: '6px',
           padding: '8px 10px',
           fontSize: '13px',
-          color: '#e5e7eb',
+          color: 'var(--text-light)',
           width: '100%',
           outline: 'none',
         }}
@@ -108,12 +108,12 @@ export default function QuickAddTask({ projects, defaultProjectId, defaultStatus
           value={projectId}
           onChange={e => setProjectId(e.target.value)}
           style={{
-            background: '#0a0a0f',
-            border: '1px solid #1e1e2e',
+            background: 'var(--bg-deep)',
+            border: '1px solid var(--border-card)',
             borderRadius: '6px',
             padding: '5px 8px',
             fontSize: '12px',
-            color: '#e5e7eb',
+            color: 'var(--text-light)',
             outline: 'none',
           }}
         >
@@ -132,7 +132,7 @@ export default function QuickAddTask({ projects, defaultProjectId, defaultStatus
               fontSize: '11px',
               fontWeight: priority === p ? 700 : 400,
               background: priority === p ? '#6366f122' : 'transparent',
-              color: priority === p ? '#a5b4fc' : '#6b7280',
+              color: priority === p ? '#a5b4fc' : 'var(--text-muted)',
               border: `1px solid ${priority === p ? '#6366f1' : '#1e1e2e'}`,
               borderRadius: '4px',
               cursor: 'pointer',
@@ -149,11 +149,11 @@ export default function QuickAddTask({ projects, defaultProjectId, defaultStatus
           onClick={() => setOpen(false)}
           style={{
             background: 'transparent',
-            border: '1px solid #1e1e2e',
+            border: '1px solid var(--border-card)',
             borderRadius: '6px',
             padding: '5px 10px',
             fontSize: '12px',
-            color: '#9ca3af',
+            color: 'var(--text-secondary)',
             cursor: 'pointer',
           }}
         >

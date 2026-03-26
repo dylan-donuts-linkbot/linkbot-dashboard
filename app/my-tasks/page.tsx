@@ -133,7 +133,7 @@ export default function MyTasksPage() {
   if (loading) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '300px' }}>
-        <div style={{ fontSize: '14px', color: '#6b7280' }}>Loading tasks...</div>
+        <div style={{ fontSize: '14px', color: 'var(--text-muted)' }}>Loading tasks...</div>
       </div>
     )
   }
@@ -171,8 +171,8 @@ export default function MyTasksPage() {
       {/* Header */}
       <div className="page-header-row" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '24px' }}>
         <div>
-          <h1 style={{ margin: '0 0 4px', fontSize: '24px', fontWeight: 700, color: '#f0f0f0' }}>My Tasks</h1>
-          <p style={{ margin: 0, fontSize: '14px', color: '#6b7280' }}>{tasks.filter(t => t.status !== 'done').length} open tasks</p>
+          <h1 style={{ margin: '0 0 4px', fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>My Tasks</h1>
+          <p style={{ margin: 0, fontSize: '14px', color: 'var(--text-muted)' }}>{tasks.filter(t => t.status !== 'done').length} open tasks</p>
         </div>
         <QuickAddTask projects={projects} onAdded={loadData} />
       </div>
@@ -197,35 +197,35 @@ export default function MyTasksPage() {
                 padding: '5px 10px',
                 fontSize: '12px',
                 fontWeight: 500,
-                background: filterStatus === f ? '#1e1e2e' : 'transparent',
-                color: filterStatus === f ? '#f0f0f0' : '#6b7280',
-                border: filterStatus === f ? '1px solid #2e2e3e' : '1px solid transparent',
+                background: filterStatus === f ? 'var(--bg-active)' : 'transparent',
+                color: filterStatus === f ? 'var(--text-primary)' : 'var(--text-muted)',
+                border: filterStatus === f ? '1px solid var(--border)' : '1px solid transparent',
                 borderRadius: '6px',
                 cursor: 'pointer',
                 textTransform: f === 'all' ? 'capitalize' : 'none',
               }}
             >
               {f === 'all' ? 'All' : <StatusBadge status={f} size="sm" />}
-              <span style={{ marginLeft: '4px', fontSize: '11px', color: '#6b7280' }}>
+              <span style={{ marginLeft: '4px', fontSize: '11px', color: 'var(--text-muted)' }}>
                 {statusCounts[f] ?? 0}
               </span>
             </button>
           ))}
         </div>
 
-        <div style={{ width: '1px', height: '20px', background: '#1e1e2e' }} />
+        <div style={{ width: '1px', height: '20px', background: 'var(--bg-active)' }} />
 
         {/* Project filter */}
         <select
           value={filterProject}
           onChange={e => setFilterProject(e.target.value)}
           style={{
-            background: '#111118',
-            border: '1px solid #1e1e2e',
+            background: 'var(--bg-card)',
+            border: '1px solid var(--border-card)',
             borderRadius: '6px',
             padding: '5px 10px',
             fontSize: '12px',
-            color: '#e5e7eb',
+            color: 'var(--text-light)',
             outline: 'none',
           }}
         >
@@ -240,12 +240,12 @@ export default function MyTasksPage() {
           value={sortBy}
           onChange={e => setSortBy(e.target.value as SortBy)}
           style={{
-            background: '#111118',
-            border: '1px solid #1e1e2e',
+            background: 'var(--bg-card)',
+            border: '1px solid var(--border-card)',
             borderRadius: '6px',
             padding: '5px 10px',
             fontSize: '12px',
-            color: '#e5e7eb',
+            color: 'var(--text-light)',
             outline: 'none',
           }}
         >
@@ -278,7 +278,7 @@ export default function MyTasksPage() {
                   borderRadius: '7px',
                   cursor: 'pointer',
                   fontSize: '14px',
-                  color: task.status === 'done' ? '#22c55e' : '#6b7280',
+                  color: task.status === 'done' ? '#22c55e' : 'var(--text-muted)',
                 }}
               >
                 {task.status === 'done' ? '✓' : '○'}

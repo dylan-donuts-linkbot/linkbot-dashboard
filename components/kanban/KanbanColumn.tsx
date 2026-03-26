@@ -13,7 +13,7 @@ interface KanbanColumnProps {
 }
 
 const COLUMN_COLORS: Record<TaskStatus, string> = {
-  backlog: '#6b7280',
+  backlog: 'var(--text-muted)',
   in_progress: '#3b82f6',
   in_review: '#eab308',
   done: '#22c55e',
@@ -24,8 +24,8 @@ export default function KanbanColumn({ id, label, tasks, onAddTask, onTaskClick 
 
   return (
     <div style={{
-      background: '#0d0d14',
-      border: '1px solid #1e1e2e',
+      background: 'var(--sidebar-bg)',
+      border: '1px solid var(--border-card)',
       borderRadius: '9px',
       padding: '12px',
       minHeight: '300px',
@@ -54,9 +54,9 @@ export default function KanbanColumn({ id, label, tasks, onAddTask, onTaskClick 
           </span>
           <span style={{
             fontSize: '11px',
-            color: '#6b7280',
-            background: '#1e1e2e',
-            border: '1px solid #2e2e3e',
+            color: 'var(--text-muted)',
+            background: 'var(--bg-active)',
+            border: '1px solid var(--border)',
             borderRadius: '4px',
             padding: '1px 7px',
           }}>
@@ -67,8 +67,8 @@ export default function KanbanColumn({ id, label, tasks, onAddTask, onTaskClick 
           onClick={onAddTask}
           style={{
             background: 'none',
-            border: '1px solid #1e1e2e',
-            color: '#6b7280',
+            border: '1px solid var(--border-card)',
+            color: 'var(--text-muted)',
             borderRadius: '5px',
             width: '22px',
             height: '22px',

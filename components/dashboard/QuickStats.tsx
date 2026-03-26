@@ -20,8 +20,8 @@ export default function QuickStats({ stats }: QuickStatsProps) {
         <div
           key={i}
           style={{
-            background: '#111118',
-            border: '1px solid #1e1e2e',
+            background: 'var(--bg-card)',
+            border: '1px solid var(--border-card)',
             borderRadius: '8px',
             padding: '16px 18px',
           }}
@@ -29,17 +29,17 @@ export default function QuickStats({ stats }: QuickStatsProps) {
           <div style={{
             fontSize: '24px',
             fontWeight: 700,
-            color: stat.color ?? '#f0f0f0',
+            color: stat.color ?? 'var(--text-primary)',
             lineHeight: 1.2,
             marginBottom: '4px',
           }}>
             {stat.value}
           </div>
-          <div style={{ fontSize: '12px', color: '#9ca3af', fontWeight: 500 }}>
+          <div style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: 500 }}>
             {stat.label}
           </div>
           {stat.subtext && (
-            <div style={{ fontSize: '11px', color: '#6b7280', marginTop: '2px' }}>
+            <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '2px' }}>
               {stat.subtext}
             </div>
           )}

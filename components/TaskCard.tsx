@@ -32,7 +32,7 @@ export default function TaskCard({ task, index, onClick }: TaskCardProps) {
           {...provided.dragHandleProps}
           onClick={onClick}
           style={{
-            background: snapshot.isDragging ? '#1f1f1f' : '#171717',
+            background: snapshot.isDragging ? 'var(--bg-hover)' : 'var(--bg-card)',
             border: `1px solid ${snapshot.isDragging ? '#3b82f6' : '#2a2a2a'}`,
             borderRadius: '7px',
             padding: '12px',

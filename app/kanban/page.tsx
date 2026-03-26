@@ -58,7 +58,7 @@ function KanbanPageInner() {
   if (loading) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '300px' }}>
-        <div style={{ fontSize: '14px', color: '#6b7280' }}>Loading board...</div>
+        <div style={{ fontSize: '14px', color: 'var(--text-muted)' }}>Loading board...</div>
       </div>
     )
   }
@@ -82,8 +82,8 @@ function KanbanPageInner() {
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '20px' }}>
         <div>
-          <h1 style={{ margin: '0 0 4px', fontSize: '24px', fontWeight: 700, color: '#f0f0f0' }}>Kanban</h1>
-          <p style={{ margin: 0, fontSize: '14px', color: '#6b7280' }}>
+          <h1 style={{ margin: '0 0 4px', fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>Kanban</h1>
+          <p style={{ margin: 0, fontSize: '14px', color: 'var(--text-muted)' }}>
             {activeCounts.in_progress} in progress · {activeCounts.backlog} backlog
           </p>
         </div>
@@ -96,15 +96,15 @@ function KanbanPageInner() {
 
       {/* Project filter */}
       <div style={{ display: 'flex', gap: '6px', marginBottom: '20px', flexWrap: 'wrap', alignItems: 'center' }}>
-        <span style={{ fontSize: '12px', color: '#6b7280', marginRight: '4px' }}>Filter:</span>
+        <span style={{ fontSize: '12px', color: 'var(--text-muted)', marginRight: '4px' }}>Filter:</span>
         <button
           onClick={() => handleProjectFilter('all')}
           style={{
             padding: '5px 12px',
             fontSize: '12px',
-            background: filterProject === 'all' ? '#6366f1' : '#111118',
-            color: filterProject === 'all' ? '#fff' : '#9ca3af',
-            border: filterProject === 'all' ? '1px solid #6366f1' : '1px solid #1e1e2e',
+            background: filterProject === 'all' ? '#6366f1' : 'var(--bg-card)',
+            color: filterProject === 'all' ? '#fff' : 'var(--text-secondary)',
+            border: filterProject === 'all' ? '1px solid #6366f1' : '1px solid var(--border-card)',
             borderRadius: '6px',
             cursor: 'pointer',
             fontWeight: filterProject === 'all' ? 600 : 400,
@@ -122,9 +122,9 @@ function KanbanPageInner() {
               gap: '6px',
               padding: '5px 12px',
               fontSize: '12px',
-              background: filterProject === p.id ? p.color + '22' : '#111118',
-              color: filterProject === p.id ? p.color : '#9ca3af',
-              border: `1px solid ${filterProject === p.id ? p.color + '66' : '#1e1e2e'}`,
+              background: filterProject === p.id ? p.color + '22' : 'var(--bg-card)',
+              color: filterProject === p.id ? p.color : 'var(--text-secondary)',
+              border: `1px solid ${filterProject === p.id ? p.color + '66' : 'var(--border-card)'}`,
               borderRadius: '6px',
               cursor: 'pointer',
               fontWeight: filterProject === p.id ? 600 : 400,
@@ -149,11 +149,11 @@ function KanbanPageInner() {
           marginBottom: '16px',
         }}>
           <ColorDot color={selectedProject.color} size={8} />
-          <span style={{ fontSize: '13px', color: '#e5e7eb', fontWeight: 600 }}>{selectedProject.name}</span>
+          <span style={{ fontSize: '13px', color: 'var(--text-light)', fontWeight: 600 }}>{selectedProject.name}</span>
           {selectedProject.stage && (
-            <span style={{ fontSize: '12px', color: '#9ca3af' }}>· {selectedProject.stage}</span>
+            <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>· {selectedProject.stage}</span>
           )}
-          <span style={{ fontSize: '12px', color: '#9ca3af', marginLeft: 'auto' }}>
+          <span style={{ fontSize: '12px', color: 'var(--text-secondary)', marginLeft: 'auto' }}>
             {activeCounts.in_progress + activeCounts.backlog + activeCounts.in_review + activeCounts.done} total tasks
           </span>
         </div>
@@ -173,7 +173,7 @@ export default function KanbanPage() {
   return (
     <Suspense fallback={
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '300px' }}>
-        <div style={{ fontSize: '14px', color: '#6b7280' }}>Loading...</div>
+        <div style={{ fontSize: '14px', color: 'var(--text-muted)' }}>Loading...</div>
       </div>
     }>
       <KanbanPageInner />

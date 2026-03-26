@@ -21,7 +21,7 @@ function formatDate(dateStr: string): string {
 }
 
 export default function KanbanCard({ task, index, onClick }: KanbanCardProps) {
-  const priorityColor = PRIORITY_COLORS[task.priority] ?? '#9ca3af'
+  const priorityColor = PRIORITY_COLORS[task.priority] ?? 'var(--text-secondary)'
 
   return (
     <Draggable draggableId={task.id} index={index}>
@@ -32,7 +32,7 @@ export default function KanbanCard({ task, index, onClick }: KanbanCardProps) {
           {...provided.dragHandleProps}
           onClick={onClick}
           style={{
-            background: snapshot.isDragging ? '#1a1a28' : '#0f0f1a',
+            background: snapshot.isDragging ? 'var(--bg-hover)' : 'var(--bg-card)',
             border: `1px solid ${snapshot.isDragging ? '#6366f1' : '#1e1e2e'}`,
             borderRadius: '7px',
             padding: '11px 12px',
@@ -73,7 +73,7 @@ export default function KanbanCard({ task, index, onClick }: KanbanCardProps) {
           <div style={{
             fontSize: '13px',
             fontWeight: 500,
-            color: '#e5e7eb',
+            color: 'var(--text-light)',
             lineHeight: 1.4,
             marginBottom: task.description ? '6px' : '8px',
           }}>
@@ -84,7 +84,7 @@ export default function KanbanCard({ task, index, onClick }: KanbanCardProps) {
           {task.description && (
             <div style={{
               fontSize: '12px',
-              color: '#6b7280',
+              color: 'var(--text-muted)',
               lineHeight: 1.4,
               marginBottom: '8px',
               overflow: 'hidden',
@@ -127,7 +127,7 @@ export default function KanbanCard({ task, index, onClick }: KanbanCardProps) {
             }}>
               {task.priority}
             </span>
-            <span style={{ fontSize: '11px', color: '#6b7280', flexShrink: 0 }}>
+            <span style={{ fontSize: '11px', color: 'var(--text-muted)', flexShrink: 0 }}>
               {formatDate(task.created_at)}
             </span>
           </div>

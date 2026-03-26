@@ -81,8 +81,8 @@ export default function TaskModal({ task, projects, defaultStatus, onSave, onDel
       <div
         onClick={e => e.stopPropagation()}
         style={{
-          background: '#171717',
-          border: '1px solid #2a2a2a',
+          background: 'var(--bg-card)',
+          border: '1px solid var(--border)',
           borderRadius: '10px',
           width: '100%',
           maxWidth: '520px',
@@ -90,7 +90,7 @@ export default function TaskModal({ task, projects, defaultStatus, onSave, onDel
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-          <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 600, color: '#f0f0f0' }}>
+          <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 600, color: 'var(--text-primary)' }}>
             {task ? 'Edit Task' : 'New Task'}
           </h2>
           <button

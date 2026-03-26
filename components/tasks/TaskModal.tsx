@@ -89,8 +89,8 @@ export default function TaskModal({ task, projects, defaultStatus, onSave, onDel
       <div
         onClick={e => e.stopPropagation()}
         style={{
-          background: '#111118',
-          border: '1px solid #1e1e2e',
+          background: 'var(--bg-card)',
+          border: '1px solid var(--border-card)',
           borderRadius: '10px',
           width: '100%',
           maxWidth: '560px',
@@ -100,19 +100,19 @@ export default function TaskModal({ task, projects, defaultStatus, onSave, onDel
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-          <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 600, color: '#f0f0f0' }}>
+          <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 600, color: 'var(--text-primary)' }}>
             {task ? 'Edit Task' : 'New Task'}
           </h2>
           <button
             onClick={onClose}
-            style={{ background: 'none', border: 'none', color: '#6b7280', fontSize: '20px', padding: '4px 8px', cursor: 'pointer' }}
+            style={{ background: 'none', border: 'none', color: 'var(--text-muted)', fontSize: '20px', padding: '4px 8px', cursor: 'pointer' }}
           >
             ×
           </button>
         </div>
 
         {/* Tabs */}
-        <div style={{ display: 'flex', gap: '0', borderBottom: '1px solid #1e1e2e', marginBottom: '20px' }}>
+        <div style={{ display: 'flex', gap: '0', borderBottom: '1px solid var(--border-card)', marginBottom: '20px' }}>
           {(['basic', 'details'] as const).map(tab => (
             <button
               key={tab}
@@ -121,7 +121,7 @@ export default function TaskModal({ task, projects, defaultStatus, onSave, onDel
                 padding: '8px 16px',
                 fontSize: '13px',
                 fontWeight: 500,
-                color: activeTab === tab ? '#f0f0f0' : '#6b7280',
+                color: activeTab === tab ? 'var(--text-primary)' : 'var(--text-muted)',
                 background: 'transparent',
                 border: 'none',
                 borderBottom: activeTab === tab ? '2px solid #6366f1' : '2px solid transparent',
@@ -178,8 +178,8 @@ export default function TaskModal({ task, projects, defaultStatus, onSave, onDel
                         fontSize: '11px',
                         fontWeight: priority === p ? 700 : 400,
                         background: priority === p ? PRIORITY_COLORS[p] + '22' : 'transparent',
-                        color: priority === p ? PRIORITY_COLORS[p] : '#6b7280',
-                        border: `1px solid ${priority === p ? PRIORITY_COLORS[p] : '#1e1e2e'}`,
+                        color: priority === p ? PRIORITY_COLORS[p] : 'var(--text-muted)',
+                        border: `1px solid ${priority === p ? PRIORITY_COLORS[p] : 'var(--border-card)'}`,
                         borderRadius: '5px',
                         cursor: 'pointer',
                         textTransform: 'uppercase',
@@ -285,12 +285,12 @@ export default function TaskModal({ task, projects, defaultStatus, onSave, onDel
 }
 
 const inputStyle: React.CSSProperties = {
-  background: '#0a0a0f',
-  border: '1px solid #1e1e2e',
+  background: 'var(--bg-deep)',
+  border: '1px solid var(--border-card)',
   borderRadius: '6px',
   padding: '8px 10px',
   fontSize: '13px',
-  color: '#e5e7eb',
+  color: 'var(--text-light)',
   width: '100%',
   outline: 'none',
 }
@@ -298,7 +298,7 @@ const inputStyle: React.CSSProperties = {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label style={{ display: 'block', fontSize: '11px', color: '#9ca3af', fontWeight: 600, marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+      <label style={{ display: 'block', fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600, marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
         {label}
       </label>
       {children}

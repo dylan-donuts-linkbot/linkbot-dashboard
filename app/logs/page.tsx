@@ -14,8 +14,8 @@ const AGENT_COLORS: Record<string, { bg: string; text: string; label: string }> 
 }
 
 function agentStyle(agent: string | undefined) {
-  if (!agent) return { bg: '#1c1c2e', text: '#9ca3af', label: 'System' }
-  return AGENT_COLORS[agent.toLowerCase()] ?? { bg: '#1c1c2e', text: '#9ca3af', label: agent }
+  if (!agent) return { bg: '#1c1c2e', text: 'var(--text-secondary)', label: 'System' }
+  return AGENT_COLORS[agent.toLowerCase()] ?? { bg: '#1c1c2e', text: 'var(--text-secondary)', label: agent }
 }
 
 function formatTimestamp(iso: string): string {
@@ -93,8 +93,8 @@ export default function LogsPage() {
   return (
     <div>
       <div style={{ marginBottom: '24px' }}>
-        <h1 style={{ margin: '0 0 4px', fontSize: '24px', fontWeight: 700, color: '#f0f0f0' }}>Agent Logs</h1>
-        <p style={{ margin: 0, fontSize: '14px', color: '#6b7280' }}>Activity from OpenClaw and sub-agents</p>
+        <h1 style={{ margin: '0 0 4px', fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>Agent Logs</h1>
+        <p style={{ margin: 0, fontSize: '14px', color: 'var(--text-muted)' }}>Activity from OpenClaw and sub-agents</p>
       </div>
 
       {loadError && (
@@ -116,8 +116,8 @@ export default function LogsPage() {
           value={filterProject}
           onChange={e => setFilterProject(e.target.value)}
           style={{
-            background: '#111118', border: '1px solid #1e1e2e', borderRadius: '6px',
-            padding: '7px 10px', fontSize: '13px', color: '#e5e7eb', cursor: 'pointer',
+            background: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '6px',
+            padding: '7px 10px', fontSize: '13px', color: 'var(--text-light)', cursor: 'pointer',
           }}
         >
           <option value="all">All projects</option>
@@ -130,8 +130,8 @@ export default function LogsPage() {
           value={filterAgent}
           onChange={e => setFilterAgent(e.target.value)}
           style={{
-            background: '#111118', border: '1px solid #1e1e2e', borderRadius: '6px',
-            padding: '7px 10px', fontSize: '13px', color: '#e5e7eb', cursor: 'pointer',
+            background: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '6px',
+            padding: '7px 10px', fontSize: '13px', color: 'var(--text-light)', cursor: 'pointer',
           }}
         >
           <option value="all">All agents</option>
@@ -144,15 +144,15 @@ export default function LogsPage() {
           <button
             onClick={() => { setFilterProject('all'); setFilterAgent('all') }}
             style={{
-              background: 'transparent', border: '1px solid #1e1e2e', borderRadius: '6px',
-              padding: '7px 10px', fontSize: '12px', color: '#6b7280', cursor: 'pointer',
+              background: 'transparent', border: '1px solid var(--border-card)', borderRadius: '6px',
+              padding: '7px 10px', fontSize: '12px', color: 'var(--text-muted)', cursor: 'pointer',
             }}
           >
             Clear
           </button>
         )}
 
-        <div style={{ marginLeft: 'auto', fontSize: '13px', color: '#6b7280', alignSelf: 'center' }}>
+        <div style={{ marginLeft: 'auto', fontSize: '13px', color: 'var(--text-muted)', alignSelf: 'center' }}>
           {loading ? 'Loading…' : `${filtered.length} ${filtered.length === 1 ? 'entry' : 'entries'}`}
         </div>
       </div>
@@ -160,11 +160,11 @@ export default function LogsPage() {
       {/* Log feed */}
       {!loading && filtered.length === 0 ? (
         <div style={{
-          background: '#111118', border: '1px solid #1e1e2e', borderRadius: '10px',
+          background: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '10px',
           padding: '60px 20px', textAlign: 'center',
         }}>
           <div style={{ fontSize: '32px', marginBottom: '12px' }}>🤖</div>
-          <div style={{ fontSize: '14px', color: '#6b7280' }}>No activity yet</div>
+          <div style={{ fontSize: '14px', color: 'var(--text-muted)' }}>No activity yet</div>
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
@@ -178,8 +178,8 @@ export default function LogsPage() {
               <div
                 key={log.id}
                 style={{
-                  background: '#111118',
-                  border: '1px solid #1e1e2e',
+                  background: 'var(--bg-card)',
+                  border: '1px solid var(--border-card)',
                   borderRadius: isFirst && isLast ? '10px' : isFirst ? '10px 10px 3px 3px' : isLast ? '3px 3px 10px 10px' : '3px',
                   padding: '12px 16px',
                   display: 'grid',
@@ -190,7 +190,7 @@ export default function LogsPage() {
                 }}
               >
                 {/* Timestamp */}
-                <div style={{ fontSize: '12px', color: '#6b7280', paddingTop: '1px', whiteSpace: 'nowrap' }}>
+                <div style={{ fontSize: '12px', color: 'var(--text-muted)', paddingTop: '1px', whiteSpace: 'nowrap' }}>
                   {formatTimestamp(log.created_at)}
                 </div>
 
@@ -213,16 +213,16 @@ export default function LogsPage() {
                 {/* Content */}
                 <div>
                   <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', flexWrap: 'wrap', marginBottom: '2px' }}>
-                    <span style={{ fontSize: '13px', fontWeight: 600, color: '#e5e7eb' }}>
+                    <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-light)' }}>
                       {isAgent ? (log as AgentLog).action : (log as ActivityLog).action}
                     </span>
                     {log.project && (
-                      <span style={{ fontSize: '11px', color: '#6b7280' }}>
+                      <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
                         · {log.project.name}
                       </span>
                     )}
                   </div>
-                  <div style={{ fontSize: '13px', color: '#9ca3af', lineHeight: 1.5 }}>
+                  <div style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
                     {isAgent ? (log as AgentLog).summary : (log as ActivityLog).detail}
                   </div>
                 </div>

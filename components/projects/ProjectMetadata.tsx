@@ -23,7 +23,7 @@ const STATUSES: { value: ProjectStatus; label: string }[] = [
   { value: 'archived', label: 'Archived' },
   { value: 'complete', label: 'Complete' },
 ]
-const COLORS = ['#6366f1', '#3b82f6', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316', '#6b7280']
+const COLORS = ['#6366f1', '#3b82f6', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316', 'var(--text-muted)']
 
 export default function ProjectMetadata({ project }: ProjectMetadataProps) {
   const router = useRouter()
@@ -86,15 +86,15 @@ export default function ProjectMetadata({ project }: ProjectMetadataProps) {
 
   return (
     <div style={{
-      background: '#111118',
-      border: '1px solid #1e1e2e',
+      background: 'var(--bg-card)',
+      border: '1px solid var(--border-card)',
       borderRadius: '10px',
       padding: '20px',
       marginBottom: '20px',
     }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <h2 style={{ margin: 0, fontSize: '14px', fontWeight: 600, color: '#f0f0f0' }}>Project Details</h2>
+          <h2 style={{ margin: 0, fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)' }}>Project Details</h2>
           {saveError && (
             <span style={{ fontSize: '12px', color: '#f87171' }}>⚠ {saveError}</span>
           )}
@@ -103,12 +103,12 @@ export default function ProjectMetadata({ project }: ProjectMetadataProps) {
           <button
             onClick={() => setEditing(true)}
             style={{
-              background: '#1e1e2e',
-              border: '1px solid #2e2e3e',
+              background: 'var(--bg-active)',
+              border: '1px solid var(--border)',
               borderRadius: '6px',
               padding: '5px 12px',
               fontSize: '12px',
-              color: '#9ca3af',
+              color: 'var(--text-secondary)',
               cursor: 'pointer',
             }}
           >
@@ -120,11 +120,11 @@ export default function ProjectMetadata({ project }: ProjectMetadataProps) {
               onClick={handleCancel}
               style={{
                 background: 'transparent',
-                border: '1px solid #2e2e3e',
+                border: '1px solid var(--border)',
                 borderRadius: '6px',
                 padding: '5px 12px',
                 fontSize: '12px',
-                color: '#9ca3af',
+                color: 'var(--text-secondary)',
                 cursor: 'pointer',
               }}
             >
@@ -274,20 +274,20 @@ export default function ProjectMetadata({ project }: ProjectMetadataProps) {
                 }}>
                   {PROJECT_TYPE_LABELS[project.project_type]}
                 </span>
-                <span style={{ fontSize: '12px', color: '#6b7280' }}>
+                <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                   {PROJECT_TYPE_DESCRIPTIONS[project.project_type]}
                 </span>
               </div>
             </MetaRow>
           )}
           <MetaRow label="Status">
-            <span style={{ fontSize: '13px', color: '#e5e7eb', textTransform: 'capitalize' }}>
+            <span style={{ fontSize: '13px', color: 'var(--text-light)', textTransform: 'capitalize' }}>
               {project.status ?? 'active'}
             </span>
           </MetaRow>
           {project.stage && (
             <MetaRow label="Stage">
-              <span style={{ fontSize: '13px', color: '#e5e7eb' }}>{project.stage}</span>
+              <span style={{ fontSize: '13px', color: 'var(--text-light)' }}>{project.stage}</span>
             </MetaRow>
           )}
           {project.github_repo && (
@@ -304,7 +304,7 @@ export default function ProjectMetadata({ project }: ProjectMetadataProps) {
           )}
           {project.vercel_project && (
             <MetaRow label="Vercel">
-              <span style={{ fontSize: '13px', color: '#e5e7eb' }}>{project.vercel_project}</span>
+              <span style={{ fontSize: '13px', color: 'var(--text-light)' }}>{project.vercel_project}</span>
             </MetaRow>
           )}
           {project.live_url && (
@@ -325,8 +325,8 @@ export default function ProjectMetadata({ project }: ProjectMetadataProps) {
                 {(project.assignees ?? []).map(a => (
                   <span key={a} style={{
                     fontSize: '12px',
-                    color: '#9ca3af',
-                    background: '#1e1e2e',
+                    color: 'var(--text-secondary)',
+                    background: 'var(--bg-active)',
                     padding: '2px 8px',
                     borderRadius: '4px',
                   }}>
@@ -341,8 +341,8 @@ export default function ProjectMetadata({ project }: ProjectMetadataProps) {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
                 {Object.entries(project.type_config).map(([k, v]) => (
                   <div key={k} style={{ fontSize: '12px', display: 'flex', gap: '6px' }}>
-                    <span style={{ color: '#6b7280', minWidth: '120px' }}>{k}</span>
-                    <span style={{ color: '#9ca3af' }}>
+                    <span style={{ color: 'var(--text-muted)', minWidth: '120px' }}>{k}</span>
+                    <span style={{ color: 'var(--text-secondary)' }}>
                       {typeof v === 'boolean' ? (v ? '✓' : '✗') : String(v)}
                     </span>
                   </div>
@@ -351,7 +351,7 @@ export default function ProjectMetadata({ project }: ProjectMetadataProps) {
             </MetaRow>
           )}
           {!project.stage && !project.github_repo && !project.vercel_project && !project.live_url && !project.project_type && (
-            <div style={{ fontSize: '13px', color: '#6b7280', fontStyle: 'italic' }}>
+            <div style={{ fontSize: '13px', color: 'var(--text-muted)', fontStyle: 'italic' }}>
               No metadata yet. Click Edit to add details.
             </div>
           )}
@@ -362,12 +362,12 @@ export default function ProjectMetadata({ project }: ProjectMetadataProps) {
 }
 
 const inputStyle: React.CSSProperties = {
-  background: '#0a0a0f',
-  border: '1px solid #1e1e2e',
+  background: 'var(--bg-deep)',
+  border: '1px solid var(--border-card)',
   borderRadius: '6px',
   padding: '8px 10px',
   fontSize: '13px',
-  color: '#e5e7eb',
+  color: 'var(--text-light)',
   width: '100%',
   outline: 'none',
 }
@@ -375,7 +375,7 @@ const inputStyle: React.CSSProperties = {
 function FieldRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label style={{ display: 'block', fontSize: '11px', color: '#9ca3af', fontWeight: 600, marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+      <label style={{ display: 'block', fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600, marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
         {label}
       </label>
       {children}
@@ -386,7 +386,7 @@ function FieldRow({ label, children }: { label: string; children: React.ReactNod
 function MetaRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-      <span style={{ fontSize: '12px', color: '#6b7280', width: '100px', flexShrink: 0, paddingTop: '1px' }}>
+      <span style={{ fontSize: '12px', color: 'var(--text-muted)', width: '100px', flexShrink: 0, paddingTop: '1px' }}>
         {label}
       </span>
       {children}

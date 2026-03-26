@@ -74,7 +74,7 @@ export default function ProjectsPage() {
   if (loading) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '300px' }}>
-        <div style={{ fontSize: '14px', color: '#6b7280' }}>Loading projects...</div>
+        <div style={{ fontSize: '14px', color: 'var(--text-muted)' }}>Loading projects...</div>
       </div>
     )
   }
@@ -96,8 +96,8 @@ export default function ProjectsPage() {
       {/* Header */}
       <div className="page-header-row" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '24px' }}>
         <div>
-          <h1 style={{ margin: '0 0 4px', fontSize: '24px', fontWeight: 700, color: '#f0f0f0' }}>Projects</h1>
-          <p style={{ margin: 0, fontSize: '14px', color: '#6b7280' }}>{projects.length} projects in your portfolio</p>
+          <h1 style={{ margin: '0 0 4px', fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>Projects</h1>
+          <p style={{ margin: 0, fontSize: '14px', color: 'var(--text-muted)' }}>{projects.length} projects in your portfolio</p>
         </div>
         <button
           onClick={() => setShowNewProject(true)}
@@ -114,16 +114,16 @@ export default function ProjectsPage() {
       </div>
 
       {/* Filter tabs */}
-      <div className="filter-tabs" style={{ display: 'flex', gap: '4px', marginBottom: '20px', borderBottom: '1px solid #1e1e2e', paddingBottom: '12px' }}>
+      <div className="filter-tabs" style={{ display: 'flex', gap: '4px', marginBottom: '20px', borderBottom: '1px solid var(--border-card)', paddingBottom: '12px' }}>
         {(['all', 'active', 'paused', 'archived', 'complete'] as FilterStatus[]).map(f => (
           <button
             key={f}
             onClick={() => setFilterStatus(f)}
             style={{
               padding: '5px 12px', fontSize: '12px', fontWeight: 500,
-              background: filterStatus === f ? '#1e1e2e' : 'transparent',
-              color: filterStatus === f ? '#f0f0f0' : '#6b7280',
-              border: filterStatus === f ? '1px solid #2e2e3e' : '1px solid transparent',
+              background: filterStatus === f ? 'var(--bg-active)' : 'transparent',
+              color: filterStatus === f ? 'var(--text-primary)' : 'var(--text-muted)',
+              border: filterStatus === f ? '1px solid var(--border)' : '1px solid transparent',
               borderRadius: '6px', cursor: 'pointer', textTransform: 'capitalize',
             }}
           >

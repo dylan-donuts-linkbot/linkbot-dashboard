@@ -17,8 +17,8 @@ export default function Header({ activeProject, projects, onSelectProject, onNew
 
   return (
     <header style={{
-      background: '#0f0f0f',
-      borderBottom: '1px solid #2a2a2a',
+      background: 'var(--bg-base)',
+      borderBottom: '1px solid var(--border)',
       padding: '0 24px',
       height: '56px',
       display: 'flex',
@@ -30,7 +30,7 @@ export default function Header({ activeProject, projects, onSelectProject, onNew
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <span style={{ fontSize: '18px', fontWeight: 700, color: '#f0f0f0', letterSpacing: '-0.3px' }}>
+          <span style={{ fontSize: '18px', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.3px' }}>
             🔗 LinkBot
           </span>
           <span style={{ color: '#555', fontSize: '13px' }}>Dashboard</span>
@@ -77,7 +77,7 @@ export default function Header({ activeProject, projects, onSelectProject, onNew
                   style={{
                     background: 'transparent',
                     color: '#555',
-                    border: '1px solid #2a2a2a',
+                    border: '1px solid var(--border)',
                     borderLeft: 'none',
                     borderRadius: '0 5px 5px 0',
                     padding: '4px 6px',

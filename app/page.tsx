@@ -77,17 +77,17 @@ export default async function DashboardPage() {
     { label: 'Done This Week', value: doneThisWeek, color: '#22c55e', subtext: 'last 7 days' },
     { label: 'Active Projects', value: activeProjects, color: '#6366f1' },
     { label: 'Total Spend', value: `$${totalSpend.toFixed(2)}`, color: '#f59e0b' },
-    { label: 'Token Cost', value: `$${totalTokenCost.toFixed(4)}`, color: '#9ca3af', subtext: 'last 100 events' },
+    { label: 'Token Cost', value: `$${totalTokenCost.toFixed(4)}`, color: 'var(--text-secondary)', subtext: 'last 100 events' },
   ]
 
   return (
     <div>
       {/* Header */}
       <div style={{ marginBottom: '28px' }}>
-        <h1 style={{ margin: '0 0 4px', fontSize: '26px', fontWeight: 700, color: '#f0f0f0' }}>
+        <h1 style={{ margin: '0 0 4px', fontSize: '26px', fontWeight: 700, color: 'var(--text-primary)' }}>
           {getGreeting()}, Dylan
         </h1>
-        <p style={{ margin: 0, fontSize: '14px', color: '#6b7280' }}>{formatDate()}</p>
+        <p style={{ margin: 0, fontSize: '14px', color: 'var(--text-muted)' }}>{formatDate()}</p>
       </div>
 
       {/* Quick Stats */}
@@ -99,17 +99,17 @@ export default async function DashboardPage() {
         }}>
           {stats.map((stat, i) => (
             <div key={i} style={{
-              background: '#111118',
-              border: '1px solid #1e1e2e',
+              background: 'var(--bg-card)',
+              border: '1px solid var(--border-card)',
               borderRadius: '8px',
               padding: '16px 18px',
             }}>
               <div style={{ fontSize: '24px', fontWeight: 700, color: stat.color, lineHeight: 1.2, marginBottom: '4px' }}>
                 {stat.value}
               </div>
-              <div style={{ fontSize: '12px', color: '#9ca3af', fontWeight: 500 }}>{stat.label}</div>
+              <div style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: 500 }}>{stat.label}</div>
               {stat.subtext && (
-                <div style={{ fontSize: '11px', color: '#6b7280', marginTop: '2px' }}>{stat.subtext}</div>
+                <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '2px' }}>{stat.subtext}</div>
               )}
             </div>
           ))}
@@ -126,7 +126,7 @@ export default async function DashboardPage() {
         {/* Project Health */}
         <section>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
-            <h2 style={{ margin: 0, fontSize: '14px', fontWeight: 700, color: '#f0f0f0', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+            <h2 style={{ margin: 0, fontSize: '14px', fontWeight: 700, color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
               Project Health
             </h2>
             <Link href="/projects" style={{ fontSize: '12px', color: '#6366f1', textDecoration: 'none' }}>
@@ -171,7 +171,7 @@ export default async function DashboardPage() {
         <section style={{ position: 'sticky', top: '20px' }}>
           <div style={{ marginBottom: '14px' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <h2 style={{ margin: 0, fontSize: '14px', fontWeight: 700, color: '#f0f0f0', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+              <h2 style={{ margin: 0, fontSize: '14px', fontWeight: 700, color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
                 Recent Activity
               </h2>
               <Link href="/activity" style={{ fontSize: '12px', color: '#6366f1', textDecoration: 'none' }}>
@@ -191,22 +191,22 @@ function DailyPriorityStackWrapper({ tasks }: { tasks: Task[] }) {
   return (
     <div>
       <div style={{ marginBottom: '14px' }}>
-        <h2 style={{ margin: 0, fontSize: '14px', fontWeight: 700, color: '#f0f0f0', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+        <h2 style={{ margin: 0, fontSize: '14px', fontWeight: 700, color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
           Today&apos;s Priority
         </h2>
       </div>
       {tasks.length === 0 ? (
         <div style={{
-          background: '#111118',
-          border: '1px solid #1e1e2e',
+          background: 'var(--bg-card)',
+          border: '1px solid var(--border-card)',
           borderRadius: '10px',
           padding: '24px',
           textAlign: 'center',
         }}>
           <div style={{ fontSize: '24px', marginBottom: '8px' }}>✅</div>
-          <div style={{ fontSize: '14px', fontWeight: 600, color: '#e5e7eb' }}>No priority tasks</div>
-          <div style={{ fontSize: '13px', color: '#6b7280', marginTop: '4px' }}>
-            Assign <code style={{ fontSize: '11px', background: '#1e1e2e', padding: '1px 5px', borderRadius: '3px' }}>priority_rank</code> and <code style={{ fontSize: '11px', background: '#1e1e2e', padding: '1px 5px', borderRadius: '3px' }}>assignee=dylan</code> to tasks to see them here.
+          <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-light)' }}>No priority tasks</div>
+          <div style={{ fontSize: '13px', color: 'var(--text-muted)', marginTop: '4px' }}>
+            Assign <code style={{ fontSize: '11px', background: 'var(--bg-active)', padding: '1px 5px', borderRadius: '3px' }}>priority_rank</code> and <code style={{ fontSize: '11px', background: 'var(--bg-active)', padding: '1px 5px', borderRadius: '3px' }}>assignee=dylan</code> to tasks to see them here.
           </div>
         </div>
       ) : (
@@ -215,7 +215,7 @@ function DailyPriorityStackWrapper({ tasks }: { tasks: Task[] }) {
             const PRIORITY_COLORS: Record<string, string> = {
               low: '#22c55e', medium: '#eab308', high: '#f97316', urgent: '#ef4444',
             }
-            const priorityColor = PRIORITY_COLORS[task.priority] ?? '#9ca3af'
+            const priorityColor = PRIORITY_COLORS[task.priority] ?? 'var(--text-secondary)'
             return (
               <Link
                 key={task.id}
@@ -225,8 +225,8 @@ function DailyPriorityStackWrapper({ tasks }: { tasks: Task[] }) {
                   alignItems: 'center',
                   gap: '12px',
                   padding: '12px 14px',
-                  background: '#111118',
-                  border: '1px solid #1e1e2e',
+                  background: 'var(--bg-card)',
+                  border: '1px solid var(--border-card)',
                   borderRadius: '8px',
                   textDecoration: 'none',
                 }}
@@ -235,20 +235,20 @@ function DailyPriorityStackWrapper({ tasks }: { tasks: Task[] }) {
                   width: '28px',
                   height: '28px',
                   borderRadius: '50%',
-                  background: i === 0 ? '#6366f1' : '#1e1e2e',
-                  border: `2px solid ${i === 0 ? '#6366f1' : '#2e2e3e'}`,
+                  background: i === 0 ? '#6366f1' : 'var(--bg-active)',
+                  border: `2px solid ${i === 0 ? '#6366f1' : 'var(--border)'}`,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontSize: '12px',
                   fontWeight: 700,
-                  color: i === 0 ? '#fff' : '#9ca3af',
+                  color: i === 0 ? '#fff' : 'var(--text-secondary)',
                   flexShrink: 0,
                 }}>
                   {i + 1}
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: '14px', fontWeight: 600, color: '#f0f0f0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {task.title}
                   </div>
                   <div style={{ display: 'flex', gap: '8px', marginTop: '3px' }}>

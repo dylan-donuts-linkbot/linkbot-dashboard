@@ -229,8 +229,8 @@ export default function ProjectModal({ onSave, onClose }: ProjectModalProps) {
         onClick={e => e.stopPropagation()}
         className="modal-content"
         style={{
-          background: '#111118',
-          border: '1px solid #1e1e2e',
+          background: 'var(--bg-card)',
+          border: '1px solid var(--border-card)',
           borderRadius: '12px',
           width: '100%',
           maxWidth: step === 2 ? '640px' : '500px',
@@ -243,10 +243,10 @@ export default function ProjectModal({ onSave, onClose }: ProjectModalProps) {
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
           <div>
-            <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: '#f0f0f0' }}>
+            <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: 'var(--text-primary)' }}>
               New Project
             </h2>
-            <div style={{ fontSize: '12px', color: '#6b7280', marginTop: '4px' }}>
+            <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '4px' }}>
               Step {step} of 4 — {
                 step === 1 ? 'Basic Info' :
                 step === 2 ? 'Project Type' :
@@ -263,7 +263,7 @@ export default function ProjectModal({ onSave, onClose }: ProjectModalProps) {
           {[1, 2, 3, 4].map(s => (
             <div key={s} style={{
               flex: 1, height: '3px', borderRadius: '2px',
-              background: s <= step ? color : '#1e1e2e',
+              background: s <= step ? color : 'var(--bg-track)',
               transition: 'background 0.2s',
             }} />
           ))}
@@ -317,7 +317,7 @@ export default function ProjectModal({ onSave, onClose }: ProjectModalProps) {
         {/* Step 2: Type Selection */}
         {step === 2 && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <p style={{ margin: '0 0 4px', fontSize: '13px', color: '#9ca3af' }}>
+            <p style={{ margin: '0 0 4px', fontSize: '13px', color: 'var(--text-secondary)' }}>
               Choose the type that best fits your project. This sets default config, stack, and agent assignments.
             </p>
             {getAllProjectTypes().map(type => {
@@ -332,8 +332,8 @@ export default function ProjectModal({ onSave, onClose }: ProjectModalProps) {
                     alignItems: 'flex-start',
                     gap: '12px',
                     padding: '12px 14px',
-                    background: selected ? `${typeColor}15` : '#0a0a0f',
-                    border: `1px solid ${selected ? typeColor : '#1e1e2e'}`,
+                    background: selected ? `${typeColor}15` : 'var(--bg-deep)',
+                    border: `1px solid ${selected ? typeColor : 'var(--border-card)'}`,
                     borderRadius: '8px',
                     cursor: 'pointer',
                     textAlign: 'left',
@@ -343,7 +343,7 @@ export default function ProjectModal({ onSave, onClose }: ProjectModalProps) {
                   <span style={{ fontSize: '20px', flexShrink: 0, marginTop: '1px' }}>{TYPE_ICONS[type]}</span>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '3px' }}>
-                      <span style={{ fontSize: '14px', fontWeight: 600, color: '#f0f0f0' }}>
+                      <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)' }}>
                         {PROJECT_TYPE_LABELS[type]}
                       </span>
                       <span style={{
@@ -353,7 +353,7 @@ export default function ProjectModal({ onSave, onClose }: ProjectModalProps) {
                         {type}
                       </span>
                     </div>
-                    <span style={{ fontSize: '12px', color: '#9ca3af' }}>
+                    <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
                       {PROJECT_TYPE_DESCRIPTIONS[type]}
                     </span>
                   </div>
@@ -372,10 +372,10 @@ export default function ProjectModal({ onSave, onClose }: ProjectModalProps) {
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
               <span style={{ fontSize: '18px' }}>{TYPE_ICONS[projectType]}</span>
               <div>
-                <div style={{ fontSize: '14px', fontWeight: 600, color: '#f0f0f0' }}>
+                <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)' }}>
                   {PROJECT_TYPE_LABELS[projectType]} Configuration
                 </div>
-                <div style={{ fontSize: '12px', color: '#6b7280' }}>
+                <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                   Defaults are pre-filled — customize as needed
                 </div>
               </div>
@@ -391,7 +391,7 @@ export default function ProjectModal({ onSave, onClose }: ProjectModalProps) {
                       onChange={e => setConfigValue(field.key, e.target.checked)}
                       style={{ width: '16px', height: '16px', accentColor: color, cursor: 'pointer' }}
                     />
-                    <span style={{ fontSize: '13px', color: '#e5e7eb' }}>
+                    <span style={{ fontSize: '13px', color: 'var(--text-light)' }}>
                       {typeConfig[field.key] ? 'Enabled' : 'Disabled'}
                     </span>
                   </label>
@@ -414,10 +414,10 @@ export default function ProjectModal({ onSave, onClose }: ProjectModalProps) {
         {/* Step 4: Review */}
         {step === 4 && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <div style={{ padding: '14px', background: '#0a0a0f', border: '1px solid #1e1e2e', borderRadius: '8px' }}>
+            <div style={{ padding: '14px', background: 'var(--bg-deep)', border: '1px solid var(--border-card)', borderRadius: '8px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
                 <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: color, flexShrink: 0 }} />
-                <span style={{ fontSize: '16px', fontWeight: 700, color: '#f0f0f0' }}>{name}</span>
+                <span style={{ fontSize: '16px', fontWeight: 700, color: 'var(--text-primary)' }}>{name}</span>
                 <span style={{
                   fontSize: '10px', fontWeight: 600, padding: '2px 7px', borderRadius: '4px',
                   background: `${PROJECT_TYPE_COLORS[projectType]}22`, color: PROJECT_TYPE_COLORS[projectType],
@@ -427,15 +427,15 @@ export default function ProjectModal({ onSave, onClose }: ProjectModalProps) {
                 </span>
               </div>
               {description && (
-                <p style={{ margin: '0 0 12px', fontSize: '13px', color: '#9ca3af' }}>{description}</p>
+                <p style={{ margin: '0 0 12px', fontSize: '13px', color: 'var(--text-secondary)' }}>{description}</p>
               )}
-              <div style={{ fontSize: '12px', color: '#6b7280' }}>
-                <strong style={{ color: '#9ca3af' }}>Configuration:</strong>
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
+                <strong style={{ color: 'var(--text-secondary)' }}>Configuration:</strong>
                 <div style={{ marginTop: '6px', display: 'flex', flexDirection: 'column', gap: '3px' }}>
                   {Object.entries(typeConfig).map(([k, v]) => (
                     <div key={k} style={{ display: 'flex', gap: '8px' }}>
-                      <span style={{ color: '#6b7280', minWidth: '140px' }}>{k}</span>
-                      <span style={{ color: '#e5e7eb' }}>
+                      <span style={{ color: 'var(--text-muted)', minWidth: '140px' }}>{k}</span>
+                      <span style={{ color: 'var(--text-light)' }}>
                         {typeof v === 'boolean' ? (v ? '✓ Yes' : '✗ No') : String(v)}
                       </span>
                     </div>
@@ -443,7 +443,7 @@ export default function ProjectModal({ onSave, onClose }: ProjectModalProps) {
                 </div>
               </div>
             </div>
-            <p style={{ margin: 0, fontSize: '12px', color: '#6b7280' }}>
+            <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-muted)' }}>
               You can edit all settings after creation from the project page.
             </p>
           </div>
@@ -508,7 +508,7 @@ export default function ProjectModal({ onSave, onClose }: ProjectModalProps) {
 const labelStyle: React.CSSProperties = {
   display: 'block',
   fontSize: '11px',
-  color: '#9ca3af',
+  color: 'var(--text-secondary)',
   fontWeight: 600,
   marginBottom: '6px',
   textTransform: 'uppercase',
@@ -516,12 +516,12 @@ const labelStyle: React.CSSProperties = {
 }
 
 const inputStyle: React.CSSProperties = {
-  background: '#0a0a0f',
-  border: '1px solid #1e1e2e',
+  background: 'var(--bg-deep)',
+  border: '1px solid var(--border-card)',
   borderRadius: '6px',
   padding: '10px 12px',
   fontSize: '16px', // 16px prevents iOS zoom on focus
-  color: '#e5e7eb',
+  color: 'var(--text-light)',
   width: '100%',
   outline: 'none',
   minHeight: '44px',
@@ -529,12 +529,12 @@ const inputStyle: React.CSSProperties = {
 }
 
 const selectStyle: React.CSSProperties = {
-  background: '#0a0a0f',
-  border: '1px solid #1e1e2e',
+  background: 'var(--bg-deep)',
+  border: '1px solid var(--border-card)',
   borderRadius: '6px',
   padding: '10px 12px',
   fontSize: '16px', // 16px prevents iOS zoom on focus
-  color: '#e5e7eb',
+  color: 'var(--text-light)',
   width: '100%',
   outline: 'none',
   minHeight: '44px',

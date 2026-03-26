@@ -23,12 +23,12 @@ export default function ActivityFeed({ logs }: ActivityFeedProps) {
     <div className="card" style={{ padding: '0', overflow: 'hidden' }}>
       <div style={{
         padding: '14px 16px',
-        borderBottom: '1px solid #2a2a2a',
+        borderBottom: '1px solid var(--border)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
       }}>
-        <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: '#f0f0f0' }}>
+        <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)' }}>
           Activity
         </h3>
         <span style={{ fontSize: '11px', color: '#555' }}>{logs.length} events</span>

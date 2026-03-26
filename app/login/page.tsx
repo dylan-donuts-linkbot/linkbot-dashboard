@@ -51,11 +51,11 @@ function LoginForm() {
     return (
       <div style={{ textAlign: 'center' }}>
         <div style={{ fontSize: '32px', marginBottom: '16px' }}>✉️</div>
-        <p style={{ margin: '0 0 8px', fontSize: '15px', fontWeight: 600, color: '#f0f0f0' }}>
+        <p style={{ margin: '0 0 8px', fontSize: '15px', fontWeight: 600, color: 'var(--text-primary)' }}>
           Check your email
         </p>
-        <p style={{ margin: '0 0 20px', fontSize: '13px', color: '#9ca3af', lineHeight: 1.5 }}>
-          Magic link sent to <strong style={{ color: '#e5e7eb' }}>{email}</strong>.
+        <p style={{ margin: '0 0 20px', fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+          Magic link sent to <strong style={{ color: 'var(--text-light)' }}>{email}</strong>.
           Click the link in the email to sign in.
         </p>
         <button
@@ -72,7 +72,7 @@ function LoginForm() {
   return (
     <form onSubmit={handleSubmit}>
       <label style={{ display: 'block', marginBottom: '16px' }}>
-        <span style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#e5e7eb', marginBottom: '6px' }}>
+        <span style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: 'var(--text-light)', marginBottom: '6px' }}>
           Email address
         </span>
         <input
@@ -121,7 +121,7 @@ export default function LoginPage() {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      background: '#0a0a0f',
+      background: 'var(--bg-deep)',
       zIndex: 9999,
     }}>
       <div style={{ width: '100%', maxWidth: '380px', margin: '0 16px' }}>
@@ -140,18 +140,18 @@ export default function LoginPage() {
           }}>
             🔗
           </div>
-          <h1 style={{ margin: '0 0 6px', fontSize: '22px', fontWeight: 700, color: '#f0f0f0' }}>
+          <h1 style={{ margin: '0 0 6px', fontSize: '22px', fontWeight: 700, color: 'var(--text-primary)' }}>
             Project HQ
           </h1>
-          <p style={{ margin: 0, fontSize: '14px', color: '#6b7280' }}>
+          <p style={{ margin: 0, fontSize: '14px', color: 'var(--text-muted)' }}>
             Sign in to continue
           </p>
         </div>
 
         {/* Card */}
         <div style={{
-          background: '#111118',
-          border: '1px solid #1e1e2e',
+          background: 'var(--bg-card)',
+          border: '1px solid var(--border-card)',
           borderRadius: '12px',
           padding: '28px',
         }}>

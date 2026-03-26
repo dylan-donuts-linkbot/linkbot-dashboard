@@ -19,7 +19,7 @@ function MetricCard({ label, value, sub, accent, children }: {
         {label}
       </div>
       {value !== undefined && (
-        <div style={{ fontSize: '28px', fontWeight: 700, color: accent || '#f0f0f0', lineHeight: 1, marginBottom: '4px' }}>
+        <div style={{ fontSize: '28px', fontWeight: 700, color: accent || 'var(--text-primary)', lineHeight: 1, marginBottom: '4px' }}>
           {value}
         </div>
       )}
@@ -49,7 +49,7 @@ function TokenSparkline({ bars }: { bars: { date: string; input: number; output:
               borderRadius: '2px 2px 0 0',
               background: total > 0
                 ? `linear-gradient(to top, #a78bfa ${inputPct}%, #60a5fa ${inputPct}%)`
-                : '#1e1e1e',
+                : 'var(--bg-hover)',
               opacity: total > 0 ? 0.85 : 0.3,
               minHeight: '3px',
             }}

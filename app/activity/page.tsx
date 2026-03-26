@@ -78,8 +78,8 @@ export default async function ActivityPage() {
     <div>
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '28px' }}>
         <div>
-          <h1 style={{ margin: '0 0 4px', fontSize: '24px', fontWeight: 700, color: '#f0f0f0' }}>Activity Log</h1>
-          <p style={{ margin: 0, fontSize: '14px', color: '#6b7280' }}>
+          <h1 style={{ margin: '0 0 4px', fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>Activity Log</h1>
+          <p style={{ margin: 0, fontSize: '14px', color: 'var(--text-muted)' }}>
             {activity.length} events · {projects.length} projects
           </p>
         </div>
@@ -99,7 +99,7 @@ export default async function ActivityPage() {
               <div style={{
                 fontSize: '13px',
                 fontWeight: 700,
-                color: '#9ca3af',
+                color: 'var(--text-secondary)',
                 textTransform: 'uppercase',
                 letterSpacing: '0.08em',
                 marginBottom: '12px',
@@ -108,8 +108,8 @@ export default async function ActivityPage() {
                 gap: '12px',
               }}>
                 {formatGroupDate(date)}
-                <div style={{ flex: 1, height: '1px', background: '#1e1e2e' }} />
-                <span style={{ fontSize: '11px', color: '#6b7280', fontWeight: 400, letterSpacing: '0' }}>
+                <div style={{ flex: 1, height: '1px', background: 'var(--bg-active)' }} />
+                <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 400, letterSpacing: '0' }}>
                   {grouped[date].length} events
                 </span>
               </div>
@@ -133,7 +133,7 @@ export default async function ActivityPage() {
                           flexShrink: 0,
                         }} />
                         {!isLast && (
-                          <div style={{ width: '1px', flex: 1, background: '#1e1e2e', marginTop: '2px' }} />
+                          <div style={{ width: '1px', flex: 1, background: 'var(--bg-active)', marginTop: '2px' }} />
                         )}
                       </div>
 
@@ -145,11 +145,11 @@ export default async function ActivityPage() {
                       }}>
                         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '8px' }}>
                           <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{ fontSize: '14px', fontWeight: 600, color: '#e5e7eb', marginBottom: '2px' }}>
+                            <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-light)', marginBottom: '2px' }}>
                               {log.action}
                             </div>
                             {log.detail && (
-                              <div style={{ fontSize: '13px', color: '#9ca3af', lineHeight: 1.5, marginBottom: '4px' }}>
+                              <div style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: '4px' }}>
                                 {log.detail}
                               </div>
                             )}
@@ -166,7 +166,7 @@ export default async function ActivityPage() {
                               </span>
                             )}
                           </div>
-                          <div style={{ fontSize: '12px', color: '#6b7280', flexShrink: 0, marginTop: '2px' }} title={formatDateTime(log.created_at)}>
+                          <div style={{ fontSize: '12px', color: 'var(--text-muted)', flexShrink: 0, marginTop: '2px' }} title={formatDateTime(log.created_at)}>
                             {timeAgo(log.created_at)}
                           </div>
                         </div>
@@ -179,7 +179,7 @@ export default async function ActivityPage() {
           ))}
 
           {activity.length >= 200 && (
-            <div style={{ textAlign: 'center', padding: '20px', fontSize: '13px', color: '#6b7280' }}>
+            <div style={{ textAlign: 'center', padding: '20px', fontSize: '13px', color: 'var(--text-muted)' }}>
               Showing latest 200 events
             </div>
           )}

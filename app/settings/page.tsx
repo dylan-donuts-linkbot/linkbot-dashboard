@@ -33,8 +33,8 @@ export default function SettingsPage() {
   return (
     <div>
       <div style={{ marginBottom: '28px' }}>
-        <h1 style={{ margin: '0 0 4px', fontSize: '24px', fontWeight: 700, color: '#f0f0f0' }}>Settings</h1>
-        <p style={{ margin: 0, fontSize: '14px', color: '#6b7280' }}>Configuration and preferences</p>
+        <h1 style={{ margin: '0 0 4px', fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>Settings</h1>
+        <p style={{ margin: 0, fontSize: '14px', color: 'var(--text-muted)' }}>Configuration and preferences</p>
       </div>
 
       <div style={{ maxWidth: '600px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -58,19 +58,19 @@ export default function SettingsPage() {
         {/* App info */}
         <Section title="Application">
           <SettingRow label="App Name" description="Project HQ — Dylan&apos;s ops center">
-            <span style={{ fontSize: '13px', color: '#9ca3af' }}>Project HQ</span>
+            <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Project HQ</span>
           </SettingRow>
           <SettingRow label="Version" description="v3 — multi-page rebuild">
-            <span style={{ fontSize: '13px', color: '#9ca3af', fontFamily: 'monospace' }}>3.0.0</span>
+            <span style={{ fontSize: '13px', color: 'var(--text-secondary)', fontFamily: 'monospace' }}>3.0.0</span>
           </SettingRow>
           <SettingRow label="Tech Stack" description="Next.js 16 · React 19 · TypeScript · Tailwind v4 · Supabase">
-            <span style={{ fontSize: '11px', color: '#6b7280' }}>—</span>
+            <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>—</span>
           </SettingRow>
         </Section>
 
         {/* Database schema */}
         <Section title="Database">
-          <div style={{ fontSize: '13px', color: '#9ca3af', lineHeight: 1.7 }}>
+          <div style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
             <p style={{ margin: '0 0 8px' }}>Run the following migrations in your Supabase SQL Editor:</p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               {[
@@ -83,14 +83,14 @@ export default function SettingsPage() {
                   alignItems: 'flex-start',
                   gap: '10px',
                   padding: '10px 12px',
-                  background: '#0a0a0f',
-                  border: '1px solid #1e1e2e',
+                  background: 'var(--bg-deep)',
+                  border: '1px solid var(--border-card)',
                   borderRadius: '6px',
                 }}>
                   <code style={{ fontSize: '12px', color: '#6366f1', fontFamily: 'monospace', flexShrink: 0 }}>
                     {m.file}
                   </code>
-                  <span style={{ fontSize: '12px', color: '#6b7280' }}>{m.desc}</span>
+                  <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{m.desc}</span>
                 </div>
               ))}
             </div>
@@ -107,12 +107,12 @@ export default function SettingsPage() {
             ].map(shortcut => (
               <div key={shortcut.keys} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <kbd style={{
-                  background: '#1e1e2e',
-                  border: '1px solid #2e2e3e',
+                  background: 'var(--bg-active)',
+                  border: '1px solid var(--border)',
                   borderRadius: '5px',
                   padding: '4px 10px',
                   fontSize: '12px',
-                  color: '#e5e7eb',
+                  color: 'var(--text-light)',
                   fontFamily: 'monospace',
                   minWidth: '48px',
                   textAlign: 'center',
@@ -120,7 +120,7 @@ export default function SettingsPage() {
                 }}>
                   {shortcut.keys}
                 </kbd>
-                <span style={{ fontSize: '13px', color: '#9ca3af' }}>{shortcut.desc}</span>
+                <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>{shortcut.desc}</span>
               </div>
             ))}
           </div>
@@ -133,17 +133,17 @@ export default function SettingsPage() {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div style={{
-      background: '#111118',
-      border: '1px solid #1e1e2e',
+      background: 'var(--bg-card)',
+      border: '1px solid var(--border-card)',
       borderRadius: '10px',
       overflow: 'hidden',
     }}>
       <div style={{
         padding: '14px 18px',
-        borderBottom: '1px solid #1e1e2e',
+        borderBottom: '1px solid var(--border-card)',
         fontSize: '13px',
         fontWeight: 600,
-        color: '#f0f0f0',
+        color: 'var(--text-primary)',
       }}>
         {title}
       </div>
@@ -166,8 +166,8 @@ function SettingRow({
   return (
     <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '16px' }}>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: '13px', fontWeight: 500, color: '#e5e7eb', marginBottom: '2px' }}>{label}</div>
-        <div style={{ fontSize: '12px', color: '#6b7280' }}>{description}</div>
+        <div style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text-light)', marginBottom: '2px' }}>{label}</div>
+        <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{description}</div>
       </div>
       <div style={{ flexShrink: 0 }}>{children}</div>
     </div>

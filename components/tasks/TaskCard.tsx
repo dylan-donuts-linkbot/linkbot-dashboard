@@ -27,25 +27,25 @@ function isDue(dueDateStr: string): boolean {
 }
 
 export default function TaskCard({ task, onClick, showProject = true }: TaskCardProps) {
-  const priorityColor = PRIORITY_COLORS[task.priority] ?? '#9ca3af'
+  const priorityColor = PRIORITY_COLORS[task.priority] ?? 'var(--text-secondary)'
   const overdue = task.due_date && task.status !== 'done' && isDue(task.due_date)
 
   return (
     <div
       onClick={onClick}
       style={{
-        background: '#111118',
-        border: `1px solid ${overdue ? '#ef444444' : '#1e1e2e'}`,
+        background: 'var(--bg-card)',
+        border: `1px solid ${overdue ? '#ef444444' : 'var(--border-card)'}`,
         borderRadius: '8px',
         padding: '12px 14px',
         cursor: 'pointer',
         transition: 'border-color 0.1s',
       }}
       onMouseEnter={e => {
-        if (!overdue) (e.currentTarget as HTMLDivElement).style.borderColor = '#2e2e3e'
+        if (!overdue) (e.currentTarget as HTMLDivElement).style.borderColor = 'var(--text-muted)'
       }}
       onMouseLeave={e => {
-        if (!overdue) (e.currentTarget as HTMLDivElement).style.borderColor = '#1e1e2e'
+        if (!overdue) (e.currentTarget as HTMLDivElement).style.borderColor = 'var(--border-card)'
       }}
     >
       {/* Priority bar */}
@@ -76,7 +76,7 @@ export default function TaskCard({ task, onClick, showProject = true }: TaskCard
       <div style={{
         fontSize: '13px',
         fontWeight: 500,
-        color: '#e5e7eb',
+        color: 'var(--text-light)',
         lineHeight: 1.4,
         marginBottom: '6px',
       }}>
@@ -87,7 +87,7 @@ export default function TaskCard({ task, onClick, showProject = true }: TaskCard
       {task.description && (
         <div style={{
           fontSize: '12px',
-          color: '#6b7280',
+          color: 'var(--text-muted)',
           lineHeight: 1.4,
           marginBottom: '8px',
           overflow: 'hidden',
@@ -132,15 +132,15 @@ export default function TaskCard({ task, onClick, showProject = true }: TaskCard
             {task.priority}
           </span>
           {task.estimated_minutes && (
-            <span style={{ fontSize: '11px', color: '#6b7280' }}>
+            <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
               ~{task.estimated_minutes}m
             </span>
           )}
           {task.assignee && task.assignee !== 'linkbot' && (
             <span style={{
               fontSize: '11px',
-              color: '#9ca3af',
-              background: '#1e1e2e',
+              color: 'var(--text-secondary)',
+              background: 'var(--bg-active)',
               padding: '2px 6px',
               borderRadius: '3px',
             }}>
@@ -152,7 +152,7 @@ export default function TaskCard({ task, onClick, showProject = true }: TaskCard
           {task.due_date && (
             <span style={{
               fontSize: '11px',
-              color: overdue ? '#ef4444' : '#6b7280',
+              color: overdue ? '#ef4444' : 'var(--text-muted)',
               fontWeight: overdue ? 600 : 400,
             }}>
               {overdue ? '⚠ ' : ''}{formatDate(task.due_date)}

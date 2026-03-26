@@ -79,8 +79,9 @@ async function fetchOpenRouterPricing(): Promise<
 /**
  * Log sync event to Supabase
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function logSyncEvent(
-  supabase: ReturnType<typeof createClient>,
+  supabase: any,
   status: 'success' | 'partial' | 'failed',
   modelsUpdated: number,
   providersSync: string[],

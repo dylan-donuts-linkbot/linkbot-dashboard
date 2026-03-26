@@ -121,7 +121,7 @@ export default async function MetricsPage() {
     if (!tokenByProject[t.project_id]) {
       tokenByProject[t.project_id] = {
         name: proj?.name ?? 'Unknown Project',
-        color: proj?.color ?? '#6b7280',
+        color: proj?.color ?? 'var(--text-muted)',
         cost: 0, input: 0, output: 0,
       }
     }
@@ -134,8 +134,8 @@ export default async function MetricsPage() {
   return (
     <div>
       <div style={{ marginBottom: '28px' }}>
-        <h1 style={{ margin: '0 0 4px', fontSize: '24px', fontWeight: 700, color: '#f0f0f0' }}>Metrics</h1>
-        <p style={{ margin: 0, fontSize: '14px', color: '#6b7280' }}>Usage, spend, and velocity analytics</p>
+        <h1 style={{ margin: '0 0 4px', fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)' }}>Metrics</h1>
+        <p style={{ margin: 0, fontSize: '14px', color: 'var(--text-muted)' }}>Usage, spend, and velocity analytics</p>
       </div>
 
       {/* Top stats */}
@@ -145,11 +145,11 @@ export default async function MetricsPage() {
           { label: 'Token Cost', value: `$${totalTokenCost.toFixed(4)}`, color: '#6366f1' },
           { label: 'Input Tokens', value: totalInputTokens.toLocaleString(), color: '#3b82f6' },
           { label: 'Output Tokens', value: totalOutputTokens.toLocaleString(), color: '#22c55e' },
-          { label: 'Sessions', value: String(sessions.length), color: '#9ca3af' },
+          { label: 'Sessions', value: String(sessions.length), color: 'var(--text-secondary)' },
         ].map((stat, i) => (
-          <div key={i} style={{ background: '#111118', border: '1px solid #1e1e2e', borderRadius: '8px', padding: '16px' }}>
+          <div key={i} style={{ background: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '8px', padding: '16px' }}>
             <div style={{ fontSize: '22px', fontWeight: 700, color: stat.color, marginBottom: '4px' }}>{stat.value}</div>
-            <div style={{ fontSize: '12px', color: '#9ca3af' }}>{stat.label}</div>
+            <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{stat.label}</div>
           </div>
         ))}
       </div>
@@ -157,11 +157,11 @@ export default async function MetricsPage() {
       {/* Main grid */}
       <div className="metrics-two-col" style={{ marginBottom: '20px' }}>
         {/* Task velocity */}
-        <div style={{ background: '#111118', border: '1px solid #1e1e2e', borderRadius: '10px', padding: '20px' }}>
-          <h2 style={{ margin: '0 0 16px', fontSize: '14px', fontWeight: 600, color: '#f0f0f0' }}>Task Status</h2>
+        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '10px', padding: '20px' }}>
+          <h2 style={{ margin: '0 0 16px', fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)' }}>Task Status</h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {[
-              { label: 'Backlog', count: tasksByStatus.backlog, color: '#6b7280' },
+              { label: 'Backlog', count: tasksByStatus.backlog, color: 'var(--text-muted)' },
               { label: 'In Progress', count: tasksByStatus.in_progress, color: '#3b82f6' },
               { label: 'In Review', count: tasksByStatus.in_review, color: '#eab308' },
               { label: 'Done', count: tasksByStatus.done, color: '#22c55e' },
@@ -171,26 +171,26 @@ export default async function MetricsPage() {
               return (
                 <div key={item.label}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                    <span style={{ fontSize: '13px', color: '#e5e7eb' }}>{item.label}</span>
+                    <span style={{ fontSize: '13px', color: 'var(--text-light)' }}>{item.label}</span>
                     <span style={{ fontSize: '13px', color: item.color, fontWeight: 600 }}>{item.count}</span>
                   </div>
-                  <div style={{ height: '6px', background: '#1e1e2e', borderRadius: '3px', overflow: 'hidden' }}>
+                  <div style={{ height: '6px', background: 'var(--bg-track)', borderRadius: '3px', overflow: 'hidden' }}>
                     <div style={{ height: '100%', width: `${pct}%`, background: item.color, borderRadius: '3px' }} />
                   </div>
                 </div>
               )
             })}
-            <div style={{ marginTop: '8px', fontSize: '12px', color: '#6b7280' }}>
+            <div style={{ marginTop: '8px', fontSize: '12px', color: 'var(--text-muted)' }}>
               {doneThisWeek} completed this week
             </div>
           </div>
         </div>
 
         {/* Spend by project */}
-        <div style={{ background: '#111118', border: '1px solid #1e1e2e', borderRadius: '10px', padding: '20px' }}>
-          <h2 style={{ margin: '0 0 16px', fontSize: '14px', fontWeight: 600, color: '#f0f0f0' }}>Spend by Project</h2>
+        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '10px', padding: '20px' }}>
+          <h2 style={{ margin: '0 0 16px', fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)' }}>Spend by Project</h2>
           {spendByProjectList.length === 0 ? (
-            <div style={{ fontSize: '13px', color: '#6b7280', fontStyle: 'italic', padding: '20px 0', textAlign: 'center' }}>
+            <div style={{ fontSize: '13px', color: 'var(--text-muted)', fontStyle: 'italic', padding: '20px 0', textAlign: 'center' }}>
               No spend data yet
             </div>
           ) : (
@@ -202,11 +202,11 @@ export default async function MetricsPage() {
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                         <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: item.color }} />
-                        <span style={{ fontSize: '13px', color: '#e5e7eb' }}>{item.name}</span>
+                        <span style={{ fontSize: '13px', color: 'var(--text-light)' }}>{item.name}</span>
                       </div>
-                      <span style={{ fontSize: '13px', color: '#f0f0f0', fontWeight: 600 }}>${item.amount.toFixed(2)}</span>
+                      <span style={{ fontSize: '13px', color: 'var(--text-primary)', fontWeight: 600 }}>${item.amount.toFixed(2)}</span>
                     </div>
-                    <div style={{ height: '5px', background: '#1e1e2e', borderRadius: '3px', overflow: 'hidden' }}>
+                    <div style={{ height: '5px', background: 'var(--bg-track)', borderRadius: '3px', overflow: 'hidden' }}>
                       <div style={{ height: '100%', width: `${pct}%`, background: item.color, borderRadius: '3px' }} />
                     </div>
                   </div>
@@ -218,8 +218,8 @@ export default async function MetricsPage() {
       </div>
 
       {/* Token usage chart (last 7 days) */}
-      <div style={{ background: '#111118', border: '1px solid #1e1e2e', borderRadius: '10px', padding: '20px', marginBottom: '20px' }}>
-        <h2 style={{ margin: '0 0 16px', fontSize: '14px', fontWeight: 600, color: '#f0f0f0' }}>Token Usage — Last 7 Days</h2>
+      <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '10px', padding: '20px', marginBottom: '20px' }}>
+        <h2 style={{ margin: '0 0 16px', fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)' }}>Token Usage — Last 7 Days</h2>
         <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-end', height: '120px' }}>
           {dailyTokens.map(day => {
             const total = day.input + day.output
@@ -228,7 +228,7 @@ export default async function MetricsPage() {
             const outputH = total > 0 ? Math.round((day.output / maxTokens) * 100) : 0
             return (
               <div key={day.date} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
-                <div style={{ fontSize: '10px', color: '#6b7280', marginBottom: '2px' }}>
+                <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginBottom: '2px' }}>
                   {total > 0 ? (total / 1000).toFixed(1) + 'k' : '0'}
                 </div>
                 <div style={{
@@ -238,12 +238,12 @@ export default async function MetricsPage() {
                   flexDirection: 'column-reverse',
                   borderRadius: '3px',
                   overflow: 'hidden',
-                  background: '#1e1e2e',
+                  background: 'var(--bg-active)',
                 }}>
                   <div style={{ height: `${inputH}%`, background: '#3b82f6' }} />
                   <div style={{ height: `${outputH}%`, background: '#22c55e' }} />
                 </div>
-                <div style={{ fontSize: '10px', color: '#6b7280' }}>
+                <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
                   {new Date(day.date + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short' })}
                 </div>
               </div>
@@ -253,11 +253,11 @@ export default async function MetricsPage() {
         <div style={{ display: 'flex', gap: '16px', marginTop: '12px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <div style={{ width: '10px', height: '10px', background: '#3b82f6', borderRadius: '2px' }} />
-            <span style={{ fontSize: '12px', color: '#9ca3af' }}>Input tokens</span>
+            <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Input tokens</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <div style={{ width: '10px', height: '10px', background: '#22c55e', borderRadius: '2px' }} />
-            <span style={{ fontSize: '12px', color: '#9ca3af' }}>Output tokens</span>
+            <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Output tokens</span>
           </div>
         </div>
       </div>
@@ -266,29 +266,29 @@ export default async function MetricsPage() {
       {tokens.length > 0 && (
         <div className="metrics-two-col" style={{ marginBottom: '20px' }}>
           {/* Provider breakdown */}
-          <div style={{ background: '#111118', border: '1px solid #1e1e2e', borderRadius: '10px', padding: '20px' }}>
-            <h2 style={{ margin: '0 0 16px', fontSize: '14px', fontWeight: 600, color: '#f0f0f0' }}>Token Cost by Provider</h2>
+          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '10px', padding: '20px' }}>
+            <h2 style={{ margin: '0 0 16px', fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)' }}>Token Cost by Provider</h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {providerList.map(([provider, stats]) => {
                 const pct = totalTokenCost > 0 ? Math.round((stats.cost / totalTokenCost) * 100) : 0
                 const providerColors: Record<string, string> = { anthropic: '#d97706', openrouter: '#8b5cf6', google: '#3b82f6' }
-                const color = providerColors[provider] ?? '#6b7280'
+                const color = providerColors[provider] ?? 'var(--text-muted)'
                 return (
                   <div key={provider}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: color }} />
-                        <span style={{ fontSize: '13px', color: '#e5e7eb', fontFamily: 'monospace' }}>{provider}</span>
+                        <span style={{ fontSize: '13px', color: 'var(--text-light)', fontFamily: 'monospace' }}>{provider}</span>
                       </div>
                       <div style={{ textAlign: 'right' }}>
-                        <span style={{ fontSize: '13px', color: '#f0f0f0', fontWeight: 600 }}>${stats.cost.toFixed(4)}</span>
-                        <span style={{ fontSize: '11px', color: '#6b7280', marginLeft: '6px' }}>{pct}%</span>
+                        <span style={{ fontSize: '13px', color: 'var(--text-primary)', fontWeight: 600 }}>${stats.cost.toFixed(4)}</span>
+                        <span style={{ fontSize: '11px', color: 'var(--text-muted)', marginLeft: '6px' }}>{pct}%</span>
                       </div>
                     </div>
-                    <div style={{ height: '5px', background: '#1e1e2e', borderRadius: '3px', overflow: 'hidden' }}>
+                    <div style={{ height: '5px', background: 'var(--bg-track)', borderRadius: '3px', overflow: 'hidden' }}>
                       <div style={{ height: '100%', width: `${pct}%`, background: color, borderRadius: '3px' }} />
                     </div>
-                    <div style={{ fontSize: '11px', color: '#6b7280', marginTop: '3px' }}>
+                    <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '3px' }}>
                       {(stats.input + stats.output).toLocaleString()} tokens
                       ({stats.input.toLocaleString()} in / {stats.output.toLocaleString()} out)
                     </div>
@@ -299,10 +299,10 @@ export default async function MetricsPage() {
           </div>
 
           {/* Token cost by project */}
-          <div style={{ background: '#111118', border: '1px solid #1e1e2e', borderRadius: '10px', padding: '20px' }}>
-            <h2 style={{ margin: '0 0 16px', fontSize: '14px', fontWeight: 600, color: '#f0f0f0' }}>Token Cost by Project</h2>
+          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '10px', padding: '20px' }}>
+            <h2 style={{ margin: '0 0 16px', fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)' }}>Token Cost by Project</h2>
             {tokenByProjectList.length === 0 && tokenUnattributed.cost === 0 ? (
-              <div style={{ fontSize: '13px', color: '#6b7280', fontStyle: 'italic', padding: '20px 0', textAlign: 'center' }}>
+              <div style={{ fontSize: '13px', color: 'var(--text-muted)', fontStyle: 'italic', padding: '20px 0', textAlign: 'center' }}>
                 No project attribution yet — add --project-id to linkbot-logger calls
               </div>
             ) : (
@@ -314,14 +314,14 @@ export default async function MetricsPage() {
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                           <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: item.color }} />
-                          <span style={{ fontSize: '13px', color: '#e5e7eb' }}>{item.name}</span>
+                          <span style={{ fontSize: '13px', color: 'var(--text-light)' }}>{item.name}</span>
                         </div>
                         <div style={{ textAlign: 'right' }}>
-                          <span style={{ fontSize: '13px', color: '#f0f0f0', fontWeight: 600 }}>${item.cost.toFixed(4)}</span>
-                          <span style={{ fontSize: '11px', color: '#6b7280', marginLeft: '6px' }}>{pct}%</span>
+                          <span style={{ fontSize: '13px', color: 'var(--text-primary)', fontWeight: 600 }}>${item.cost.toFixed(4)}</span>
+                          <span style={{ fontSize: '11px', color: 'var(--text-muted)', marginLeft: '6px' }}>{pct}%</span>
                         </div>
                       </div>
-                      <div style={{ height: '5px', background: '#1e1e2e', borderRadius: '3px', overflow: 'hidden' }}>
+                      <div style={{ height: '5px', background: 'var(--bg-track)', borderRadius: '3px', overflow: 'hidden' }}>
                         <div style={{ height: '100%', width: `${pct}%`, background: item.color, borderRadius: '3px' }} />
                       </div>
                     </div>
@@ -331,13 +331,13 @@ export default async function MetricsPage() {
                   <div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#374151' }} />
-                        <span style={{ fontSize: '13px', color: '#6b7280', fontStyle: 'italic' }}>Unattributed</span>
+                        <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--text-muted)' }} />
+                        <span style={{ fontSize: '13px', color: 'var(--text-muted)', fontStyle: 'italic' }}>Unattributed</span>
                       </div>
-                      <span style={{ fontSize: '13px', color: '#6b7280' }}>${tokenUnattributed.cost.toFixed(4)}</span>
+                      <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>${tokenUnattributed.cost.toFixed(4)}</span>
                     </div>
-                    <div style={{ height: '5px', background: '#1e1e2e', borderRadius: '3px', overflow: 'hidden' }}>
-                      <div style={{ height: '100%', width: `${totalTokenCost > 0 ? Math.round((tokenUnattributed.cost / totalTokenCost) * 100) : 0}%`, background: '#374151', borderRadius: '3px' }} />
+                    <div style={{ height: '5px', background: 'var(--bg-track)', borderRadius: '3px', overflow: 'hidden' }}>
+                      <div style={{ height: '100%', width: `${totalTokenCost > 0 ? Math.round((tokenUnattributed.cost / totalTokenCost) * 100) : 0}%`, background: 'var(--text-muted)', borderRadius: '3px' }} />
                     </div>
                   </div>
                 )}
@@ -349,8 +349,8 @@ export default async function MetricsPage() {
 
       {/* Models used */}
       {modelList.length > 0 && (
-        <div style={{ background: '#111118', border: '1px solid #1e1e2e', borderRadius: '10px', padding: '20px' }}>
-          <h2 style={{ margin: '0 0 14px', fontSize: '14px', fontWeight: 600, color: '#f0f0f0' }}>Models Used</h2>
+        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '10px', padding: '20px' }}>
+          <h2 style={{ margin: '0 0 14px', fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)' }}>Models Used</h2>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
             {modelList.map(([model, count]) => (
               <div key={model} style={{
@@ -358,12 +358,12 @@ export default async function MetricsPage() {
                 alignItems: 'center',
                 gap: '8px',
                 padding: '8px 12px',
-                background: '#0a0a0f',
-                border: '1px solid #1e1e2e',
+                background: 'var(--bg-deep)',
+                border: '1px solid var(--border-card)',
                 borderRadius: '6px',
               }}>
-                <span style={{ fontSize: '13px', color: '#e5e7eb', fontFamily: 'monospace' }}>{model}</span>
-                <span style={{ fontSize: '12px', color: '#6b7280' }}>{count}×</span>
+                <span style={{ fontSize: '13px', color: 'var(--text-light)', fontFamily: 'monospace' }}>{model}</span>
+                <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{count}×</span>
               </div>
             ))}
           </div>

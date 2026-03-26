@@ -20,18 +20,18 @@ function timeAgo(dateStr: string): string {
 
 export default function ActivityFeed({ logs, maxHeight = '400px' }: ActivityFeedProps) {
   return (
-    <div style={{ background: '#111118', border: '1px solid #1e1e2e', borderRadius: '8px', overflow: 'hidden' }}>
+    <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '8px', overflow: 'hidden' }}>
       <div style={{
         padding: '14px 16px',
-        borderBottom: '1px solid #1e1e2e',
+        borderBottom: '1px solid var(--border-card)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
       }}>
-        <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: '#f0f0f0' }}>
+        <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)' }}>
           Activity
         </h3>
-        <span style={{ fontSize: '11px', color: '#6b7280' }}>{logs.length} events</span>
+        <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{logs.length} events</span>
       </div>
 
       <div style={{ overflowY: 'auto', maxHeight }}>
@@ -62,11 +62,11 @@ export default function ActivityFeed({ logs, maxHeight = '400px' }: ActivityFeed
                 flexShrink: 0,
               }} />
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: '13px', color: '#e5e7eb', fontWeight: 500, marginBottom: '2px' }}>
+                <div style={{ fontSize: '13px', color: 'var(--text-light)', fontWeight: 500, marginBottom: '2px' }}>
                   {log.action}
                 </div>
                 {log.detail && (
-                  <div style={{ fontSize: '12px', color: '#6b7280', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     {log.detail}
                   </div>
                 )}
@@ -76,7 +76,7 @@ export default function ActivityFeed({ logs, maxHeight = '400px' }: ActivityFeed
                   </div>
                 )}
               </div>
-              <div style={{ fontSize: '11px', color: '#6b7280', flexShrink: 0 }}>
+              <div style={{ fontSize: '11px', color: 'var(--text-muted)', flexShrink: 0 }}>
                 {timeAgo(log.created_at)}
               </div>
             </div>

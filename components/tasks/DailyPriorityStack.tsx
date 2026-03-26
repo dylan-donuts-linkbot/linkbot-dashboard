@@ -22,17 +22,17 @@ export default function DailyPriorityStack({ tasks, onTaskClick }: DailyPriority
   if (top.length === 0) {
     return (
       <div style={{
-        background: '#111118',
-        border: '1px solid #1e1e2e',
+        background: 'var(--bg-card)',
+        border: '1px solid var(--border-card)',
         borderRadius: '10px',
         padding: '20px',
         marginBottom: '24px',
         textAlign: 'center',
       }}>
         <div style={{ fontSize: '24px', marginBottom: '8px' }}>🎉</div>
-        <div style={{ fontSize: '14px', fontWeight: 600, color: '#e5e7eb' }}>No priority tasks</div>
-        <div style={{ fontSize: '13px', color: '#6b7280', marginTop: '4px' }}>
-          All clear — or set <code style={{ fontSize: '11px', background: '#1e1e2e', padding: '1px 5px', borderRadius: '3px' }}>priority_rank</code> on tasks to prioritize them here.
+        <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-light)' }}>No priority tasks</div>
+        <div style={{ fontSize: '13px', color: 'var(--text-muted)', marginTop: '4px' }}>
+          All clear — or set <code style={{ fontSize: '11px', background: 'var(--bg-active)', padding: '1px 5px', borderRadius: '3px' }}>priority_rank</code> on tasks to prioritize them here.
         </div>
       </div>
     )
@@ -40,22 +40,22 @@ export default function DailyPriorityStack({ tasks, onTaskClick }: DailyPriority
 
   return (
     <div style={{
-      background: '#111118',
-      border: '1px solid #1e1e2e',
+      background: 'var(--bg-card)',
+      border: '1px solid var(--border-card)',
       borderRadius: '10px',
       padding: '20px',
       marginBottom: '24px',
     }}>
       <div style={{ marginBottom: '14px' }}>
-        <h2 style={{ margin: '0 0 2px', fontSize: '14px', fontWeight: 700, color: '#f0f0f0' }}>
+        <h2 style={{ margin: '0 0 2px', fontSize: '14px', fontWeight: 700, color: 'var(--text-primary)' }}>
           Today&apos;s Priority
         </h2>
-        <div style={{ fontSize: '12px', color: '#6b7280' }}>Your top tasks to focus on</div>
+        <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Your top tasks to focus on</div>
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
         {top.map((task, i) => {
-          const priorityColor = PRIORITY_COLORS[task.priority] ?? '#9ca3af'
+          const priorityColor = PRIORITY_COLORS[task.priority] ?? 'var(--text-secondary)'
           return (
             <div
               key={task.id}
@@ -65,14 +65,14 @@ export default function DailyPriorityStack({ tasks, onTaskClick }: DailyPriority
                 alignItems: 'center',
                 gap: '12px',
                 padding: '12px 14px',
-                background: '#0a0a0f',
-                border: '1px solid #1e1e2e',
+                background: 'var(--bg-deep)',
+                border: '1px solid var(--border-card)',
                 borderRadius: '8px',
                 cursor: 'pointer',
                 transition: 'border-color 0.1s',
               }}
               onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = '#2e2e3e' }}
-              onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = '#1e1e2e' }}
+              onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = 'var(--border-card)' }}
             >
               {/* Rank bubble */}
               <div style={{
@@ -86,7 +86,7 @@ export default function DailyPriorityStack({ tasks, onTaskClick }: DailyPriority
                 justifyContent: 'center',
                 fontSize: '11px',
                 fontWeight: 700,
-                color: i === 0 ? '#fff' : '#9ca3af',
+                color: i === 0 ? '#fff' : 'var(--text-secondary)',
                 flexShrink: 0,
               }}>
                 {i + 1}
@@ -96,7 +96,7 @@ export default function DailyPriorityStack({ tasks, onTaskClick }: DailyPriority
                 <div style={{
                   fontSize: '14px',
                   fontWeight: 600,
-                  color: '#f0f0f0',
+                  color: 'var(--text-primary)',
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                   whiteSpace: 'nowrap',
@@ -113,14 +113,14 @@ export default function DailyPriorityStack({ tasks, onTaskClick }: DailyPriority
                     {task.priority}
                   </span>
                   {task.estimated_minutes && (
-                    <span style={{ fontSize: '11px', color: '#6b7280' }}>
+                    <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
                       ~{task.estimated_minutes}m
                     </span>
                   )}
                 </div>
               </div>
 
-              <div style={{ fontSize: '11px', color: '#6b7280', flexShrink: 0 }}>
+              <div style={{ fontSize: '11px', color: 'var(--text-muted)', flexShrink: 0 }}>
                 {RANK_LABELS[i]}
               </div>
             </div>

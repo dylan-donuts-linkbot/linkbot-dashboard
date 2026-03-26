@@ -22,15 +22,15 @@ export default function ProjectHealthCard({ project, tasks }: ProjectHealthCardP
       href={`/projects/${project.id}`}
       style={{
         display: 'block',
-        background: '#111118',
-        border: '1px solid #1e1e2e',
+        background: 'var(--bg-card)',
+        border: '1px solid var(--border-card)',
         borderRadius: '8px',
         padding: '16px',
         textDecoration: 'none',
         transition: 'border-color 0.15s',
       }}
       onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = project.color + '66' }}
-      onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = '#1e1e2e' }}
+      onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = 'var(--border-card)' }}
     >
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '10px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
@@ -38,7 +38,7 @@ export default function ProjectHealthCard({ project, tasks }: ProjectHealthCardP
           <span style={{
             fontSize: '14px',
             fontWeight: 600,
-            color: '#f0f0f0',
+            color: 'var(--text-primary)',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
@@ -53,7 +53,7 @@ export default function ProjectHealthCard({ project, tasks }: ProjectHealthCardP
       <div style={{ marginBottom: '10px' }}>
         <div style={{
           height: '4px',
-          background: '#1e1e2e',
+          background: 'var(--bg-active)',
           borderRadius: '2px',
           overflow: 'hidden',
         }}>
@@ -65,20 +65,20 @@ export default function ProjectHealthCard({ project, tasks }: ProjectHealthCardP
             transition: 'width 0.3s',
           }} />
         </div>
-        <div style={{ fontSize: '11px', color: '#6b7280', marginTop: '4px' }}>
+        <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '4px' }}>
           {pct}% complete ({doneTasks}/{total} tasks)
         </div>
       </div>
 
       {/* Stats row */}
       <div style={{ display: 'flex', gap: '12px' }}>
-        <div style={{ fontSize: '12px', color: '#9ca3af' }}>
+        <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
           <span style={{ color: '#3b82f6', fontWeight: 600 }}>{inProgressTasks}</span> in progress
         </div>
-        <div style={{ fontSize: '12px', color: '#9ca3af' }}>
+        <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
           <span style={{ color: '#22c55e', fontWeight: 600 }}>{doneTasks}</span> done
         </div>
-        <div style={{ fontSize: '12px', color: '#9ca3af' }}>
+        <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
           <span style={{ fontWeight: 600 }}>{total}</span> total
         </div>
       </div>
@@ -87,8 +87,8 @@ export default function ProjectHealthCard({ project, tasks }: ProjectHealthCardP
         <div style={{ marginTop: '8px' }}>
           <span style={{
             fontSize: '11px',
-            color: '#9ca3af',
-            background: '#1e1e2e',
+            color: 'var(--text-secondary)',
+            background: 'var(--bg-active)',
             padding: '2px 8px',
             borderRadius: '4px',
           }}>

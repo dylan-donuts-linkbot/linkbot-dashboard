@@ -37,15 +37,15 @@ export default function PRDSection({ project }: PRDSectionProps) {
 
   return (
     <div style={{
-      background: '#111118',
-      border: '1px solid #1e1e2e',
+      background: 'var(--bg-card)',
+      border: '1px solid var(--border-card)',
       borderRadius: '10px',
       padding: '20px',
       marginBottom: '20px',
     }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
         <div>
-          <h2 style={{ margin: '0 0 2px', fontSize: '14px', fontWeight: 600, color: '#f0f0f0' }}>
+          <h2 style={{ margin: '0 0 2px', fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)' }}>
             PRD / Context
           </h2>
           {project.prd_url && (
@@ -63,12 +63,12 @@ export default function PRDSection({ project }: PRDSectionProps) {
           <button
             onClick={() => setEditing(true)}
             style={{
-              background: '#1e1e2e',
-              border: '1px solid #2e2e3e',
+              background: 'var(--bg-active)',
+              border: '1px solid var(--border)',
               borderRadius: '6px',
               padding: '5px 12px',
               fontSize: '12px',
-              color: '#9ca3af',
+              color: 'var(--text-secondary)',
               cursor: 'pointer',
             }}
           >
@@ -80,11 +80,11 @@ export default function PRDSection({ project }: PRDSectionProps) {
               onClick={() => { setPrdContent(project.prd_content ?? ''); setPrdUrl(project.prd_url ?? ''); setEditing(false) }}
               style={{
                 background: 'transparent',
-                border: '1px solid #2e2e3e',
+                border: '1px solid var(--border)',
                 borderRadius: '6px',
                 padding: '5px 12px',
                 fontSize: '12px',
-                color: '#9ca3af',
+                color: 'var(--text-secondary)',
                 cursor: 'pointer',
               }}
             >
@@ -118,7 +118,7 @@ export default function PRDSection({ project }: PRDSectionProps) {
       {editing ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           <div>
-            <label style={{ display: 'block', fontSize: '11px', color: '#9ca3af', fontWeight: 600, marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <label style={{ display: 'block', fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600, marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               External PRD URL (optional)
             </label>
             <input
@@ -126,19 +126,19 @@ export default function PRDSection({ project }: PRDSectionProps) {
               onChange={e => setPrdUrl(e.target.value)}
               placeholder="https://notion.so/..."
               style={{
-                background: '#0a0a0f',
-                border: '1px solid #1e1e2e',
+                background: 'var(--bg-deep)',
+                border: '1px solid var(--border-card)',
                 borderRadius: '6px',
                 padding: '8px 10px',
                 fontSize: '13px',
-                color: '#e5e7eb',
+                color: 'var(--text-light)',
                 width: '100%',
                 outline: 'none',
               }}
             />
           </div>
           <div>
-            <label style={{ display: 'block', fontSize: '11px', color: '#9ca3af', fontWeight: 600, marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <label style={{ display: 'block', fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600, marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               PRD Content (Markdown supported)
             </label>
             <textarea
@@ -147,12 +147,12 @@ export default function PRDSection({ project }: PRDSectionProps) {
               rows={16}
               placeholder="## Overview&#10;&#10;Describe the project goal, features, and requirements...&#10;&#10;## Features&#10;&#10;- Feature 1&#10;- Feature 2"
               style={{
-                background: '#0a0a0f',
-                border: '1px solid #1e1e2e',
+                background: 'var(--bg-deep)',
+                border: '1px solid var(--border-card)',
                 borderRadius: '6px',
                 padding: '10px',
                 fontSize: '13px',
-                color: '#e5e7eb',
+                color: 'var(--text-light)',
                 width: '100%',
                 outline: 'none',
                 resize: 'vertical',
@@ -177,7 +177,7 @@ export default function PRDSection({ project }: PRDSectionProps) {
         <div style={{
           padding: '32px',
           textAlign: 'center',
-          color: '#6b7280',
+          color: 'var(--text-muted)',
           fontSize: '13px',
           border: '2px dashed #1e1e2e',
           borderRadius: '8px',
