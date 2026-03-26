@@ -99,20 +99,35 @@ export default function TaskCard({ task, onClick, showProject = true }: TaskCard
         </div>
       )}
 
-      {/* Agent badge */}
-      {task.agent_name && (
-        <div style={{ marginBottom: '6px' }}>
-          <span style={{
-            fontSize: '10px',
-            color: '#a78bfa',
-            background: '#a78bfa15',
-            border: '1px solid #a78bfa33',
-            padding: '2px 6px',
-            borderRadius: '3px',
-            fontFamily: 'monospace',
-          }}>
-            {task.agent_name}
-          </span>
+      {/* Badges row: auto_created + agent */}
+      {(task.auto_created || task.agent_name) && (
+        <div style={{ marginBottom: '6px', display: 'flex', gap: '5px', flexWrap: 'wrap' }}>
+          {task.auto_created && (
+            <span style={{
+              fontSize: '10px',
+              color: '#fbbf24',
+              background: '#fbbf2415',
+              border: '1px solid #fbbf2433',
+              padding: '2px 6px',
+              borderRadius: '3px',
+              fontWeight: 600,
+            }}>
+              Auto-created
+            </span>
+          )}
+          {task.agent_name && (
+            <span style={{
+              fontSize: '10px',
+              color: '#a78bfa',
+              background: '#a78bfa15',
+              border: '1px solid #a78bfa33',
+              padding: '2px 6px',
+              borderRadius: '3px',
+              fontFamily: 'monospace',
+            }}>
+              {task.agent_name}
+            </span>
+          )}
         </div>
       )}
 

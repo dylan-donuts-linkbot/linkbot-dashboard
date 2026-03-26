@@ -1,7 +1,32 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Task, Project, Priority, TaskStatus } from '@/types'
+import { useState, useEffect, useCallback } from 'react'
+import { Task, Project, Priority, TaskStatus, ActivityLog } from '@/types'
+import { getSupabase } from '@/lib/supabase'
+
+const AGENT_COLORS: Record<string, { bg: string; text: string }> = {
+  openclaw:  { bg: '#451a03', text: '#fbbf24' },
+  discovery: { bg: '#172554', text: '#60a5fa' },
+  design:    { bg: '#2e1065', text: '#c084fc' },
+  dev:       { bg: '#042f2e', text: '#2dd4bf' },
+  system:    { bg: '#1c1c2e', text: '#6b7280' },
+}
+
+function agentStyle(agent: string) {
+  const key = agent.toLowerCase()
+  return AGENT_COLORS[key] ?? { bg: '#1c1c2e', text: '#9ca3af' }
+}
+
+function timeAgo(dateStr: string): string {
+  const diff = Date.now() - new Date(dateStr).getTime()
+  const mins = Math.floor(diff / 60000)
+  const hours = Math.floor(diff / 3600000)
+  const days = Math.floor(diff / 86400000)
+  if (mins < 1) return 'just now'
+  if (mins < 60) return `${mins}m ago`
+  if (hours < 24) return `${hours}h ago`
+  return days < 7 ? `${days}d ago` : new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+}
 
 interface TaskModalProps {
   task: Task | null
@@ -40,7 +65,30 @@ export default function TaskModal({ task, projects, defaultStatus, onSave, onDel
   const [dueDate, setDueDate] = useState<string>(task?.due_date ?? '')
   const [saving, setSaving] = useState(false)
   const [deleting, setDeleting] = useState(false)
-  const [activeTab, setActiveTab] = useState<'basic' | 'details'>('basic')
+  const [activeTab, setActiveTab] = useState<'basic' | 'details' | 'activity'>('basic')
+  const [activityLogs, setActivityLogs] = useState<ActivityLog[]>([])
+  const [activityLoading, setActivityLoading] = useState(false)
+
+  const loadActivity = useCallback(async () => {
+    if (!task?.id) return
+    setActivityLoading(true)
+    try {
+      const supabase = getSupabase()
+      const { data } = await supabase
+        .from('activity_log')
+        .select('*')
+        .eq('task_id', task.id)
+        .order('created_at', { ascending: false })
+        .limit(50)
+      setActivityLogs((data as ActivityLog[]) ?? [])
+    } finally {
+      setActivityLoading(false)
+    }
+  }, [task?.id])
+
+  useEffect(() => {
+    if (activeTab === 'activity') loadActivity()
+  }, [activeTab, loadActivity])
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
@@ -113,7 +161,7 @@ export default function TaskModal({ task, projects, defaultStatus, onSave, onDel
 
         {/* Tabs */}
         <div style={{ display: 'flex', gap: '0', borderBottom: '1px solid var(--border-card)', marginBottom: '20px' }}>
-          {(['basic', 'details'] as const).map(tab => (
+          {(task ? (['basic', 'details', 'activity'] as const) : (['basic', 'details'] as const)).map(tab => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -134,7 +182,42 @@ export default function TaskModal({ task, projects, defaultStatus, onSave, onDel
           ))}
         </div>
 
-        {activeTab === 'basic' ? (
+        {activeTab === 'activity' ? (
+          <div>
+            {task?.auto_created && (
+              <div style={{ marginBottom: '12px', padding: '8px 12px', background: '#fbbf2410', border: '1px solid #fbbf2430', borderRadius: '6px', fontSize: '12px', color: '#fbbf24' }}>
+                Auto-created by LinkBot
+              </div>
+            )}
+            {activityLoading ? (
+              <div style={{ fontSize: '13px', color: 'var(--text-muted)', padding: '20px 0' }}>Loading activity…</div>
+            ) : activityLogs.length === 0 ? (
+              <div style={{ fontSize: '13px', color: 'var(--text-muted)', padding: '20px 0', textAlign: 'center' }}>No activity logged for this task.</div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {activityLogs.map(log => {
+                  const aStyle = agentStyle(log.agent ?? 'system')
+                  return (
+                    <div key={log.id} style={{ padding: '10px 12px', background: 'var(--bg-deep)', borderRadius: '6px', border: '1px solid var(--border-card)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
+                        <span style={{ fontSize: '10px', fontWeight: 600, background: aStyle.bg, color: aStyle.text, padding: '1px 5px', borderRadius: '3px' }}>
+                          {log.agent ?? 'system'}
+                        </span>
+                        <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-light)' }}>{log.action}</span>
+                        <span style={{ marginLeft: 'auto', fontSize: '11px', color: 'var(--text-muted)' }}>{timeAgo(log.created_at)}</span>
+                      </div>
+                      {(log.summary ?? log.detail) && (
+                        <div style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
+                          {log.summary ?? log.detail}
+                        </div>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+        ) : activeTab === 'basic' ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
             <Field label="Title *">
               <input
@@ -255,7 +338,7 @@ export default function TaskModal({ task, projects, defaultStatus, onSave, onDel
           </div>
         )}
 
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '24px', gap: '8px' }}>
+        <div style={{ display: activeTab === 'activity' ? 'none' : 'flex', justifyContent: 'space-between', marginTop: '24px', gap: '8px' }}>
           <div>
             {task && onDelete && (
               <button

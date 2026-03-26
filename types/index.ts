@@ -51,6 +51,9 @@ export interface Task {
   sync_source?: string | null
   last_synced_at?: string | null
   sync_status?: string | null
+  // v10 activity fields
+  auto_created?: boolean
+  last_activity_id?: string | null
   created_at: string
   updated_at: string
   project?: Project
@@ -58,11 +61,17 @@ export interface Task {
 
 export interface ActivityLog {
   id: string
+  agent: string
   action: string
-  detail: string | null
+  summary: string | null
+  detail: string | null           // legacy field — may be null on new entries
+  status: string | null           // 'complete' | 'in_progress' | 'blocked'
+  task_id: string | null
   project_id: string | null
+  metadata: Record<string, unknown> | null
   created_at: string
   project?: Project
+  task?: Task
 }
 
 export interface Session {
