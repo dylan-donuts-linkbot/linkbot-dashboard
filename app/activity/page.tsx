@@ -91,7 +91,7 @@ export default function ActivityPage() {
       const [{ data: activityData, error: activityError }, { data: projectsData }] = await Promise.all([
         supabase
           .from('activity_log')
-          .select('*, project:projects(id, name, color), task:tasks(id, title)')
+          .select('id, agent, action, summary, detail, status, task_id, project_id, metadata, created_at, projects!project_id(id, name, color), tasks!task_id(id, title)')
           .order('created_at', { ascending: false })
           .limit(500),
         supabase.from('projects').select('id, name, color').order('name', { ascending: true }),
@@ -204,7 +204,7 @@ export default function ActivityPage() {
                     <div key={log.id} style={{ display: 'flex', gap: 0 }}>
                       {/* Timeline */}
                       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '32px', flexShrink: 0 }}>
-                        <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: log.project?.color ?? '#6366f1', border: '2px solid #0a0a0f', marginTop: '14px', zIndex: 1, flexShrink: 0 }} />
+                        <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: (log as any).project_id ? ((log as any).project_id as any).color : '#6366f1', border: '2px solid #0a0a0f', marginTop: '14px', zIndex: 1, flexShrink: 0 }} />
                         {!isLast && <div style={{ width: '1px', flex: 1, background: 'var(--bg-active)', marginTop: '2px' }} />}
                       </div>
 
@@ -233,15 +233,15 @@ export default function ActivityPage() {
                               </div>
                             )}
                             {/* Task link */}
-                            {log.task && (
+                            {(log as any).task_id && (
                               <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '3px' }}>
-                                Task: <span style={{ color: 'var(--text-secondary)' }}>{log.task.title}</span>
+                                Task: <span style={{ color: 'var(--text-secondary)' }}>{((log as any).task_id as any).title}</span>
                               </div>
                             )}
                             {/* Project badge */}
-                            {log.project && (
-                              <span style={{ fontSize: '11px', color: log.project.color, background: log.project.color + '15', padding: '2px 7px', borderRadius: '4px', fontWeight: 500 }}>
-                                {log.project.name}
+                            {(log as any).project_id && (
+                              <span style={{ fontSize: '11px', color: ((log as any).project_id as any).color, background: ((log as any).project_id as any).color + '15', padding: '2px 7px', borderRadius: '4px', fontWeight: 500 }}>
+                                {((log as any).project_id as any).name}
                               </span>
                             )}
                           </div>
