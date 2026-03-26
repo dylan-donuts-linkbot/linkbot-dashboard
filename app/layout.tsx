@@ -35,13 +35,7 @@ export default async function RootLayout({
     <html lang="en">
       <body style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#0a0a0f', margin: 0, padding: 0 }}>
         <Sidebar projects={projects} />
-        <main style={{
-          flex: 1,
-          marginLeft: '240px',
-          padding: '28px 32px',
-          overflowY: 'auto',
-          minHeight: '100vh',
-        }}>
+        <main className="main-content">
           {children}
         </main>
       </body>

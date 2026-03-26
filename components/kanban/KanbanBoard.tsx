@@ -112,22 +112,19 @@ export default function KanbanBoard({ initialTasks, projects, activeProjectId }:
         </div>
       )}
       <DragDropContext onDragEnd={onDragEnd}>
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)',
-          gap: '12px',
-          alignItems: 'start',
-        }}>
-          {COLUMNS.map(col => (
-            <KanbanColumn
-              key={col.id}
-              id={col.id}
-              label={col.label}
-              tasks={byStatus(col.id)}
-              onAddTask={() => openNew(col.id)}
-              onTaskClick={setEditingTask}
-            />
-          ))}
+        <div className="kanban-grid-wrapper">
+          <div className="kanban-grid">
+            {COLUMNS.map(col => (
+              <KanbanColumn
+                key={col.id}
+                id={col.id}
+                label={col.label}
+                tasks={byStatus(col.id)}
+                onAddTask={() => openNew(col.id)}
+                onTaskClick={setEditingTask}
+              />
+            ))}
+          </div>
         </div>
       </DragDropContext>
 

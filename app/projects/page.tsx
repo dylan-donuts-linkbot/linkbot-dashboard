@@ -94,7 +94,7 @@ export default function ProjectsPage() {
       )}
 
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '24px' }}>
+      <div className="page-header-row" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '24px' }}>
         <div>
           <h1 style={{ margin: '0 0 4px', fontSize: '24px', fontWeight: 700, color: '#f0f0f0' }}>Projects</h1>
           <p style={{ margin: 0, fontSize: '14px', color: '#6b7280' }}>{projects.length} projects in your portfolio</p>
@@ -106,6 +106,7 @@ export default function ProjectsPage() {
             padding: '9px 16px', background: '#6366f1',
             border: 'none', borderRadius: '7px',
             fontSize: '13px', fontWeight: 600, color: '#fff', cursor: 'pointer',
+            minHeight: '44px',
           }}
         >
           + New Project
@@ -113,7 +114,7 @@ export default function ProjectsPage() {
       </div>
 
       {/* Filter tabs */}
-      <div style={{ display: 'flex', gap: '4px', marginBottom: '20px', borderBottom: '1px solid #1e1e2e', paddingBottom: '12px' }}>
+      <div className="filter-tabs" style={{ display: 'flex', gap: '4px', marginBottom: '20px', borderBottom: '1px solid #1e1e2e', paddingBottom: '12px' }}>
         {(['all', 'active', 'paused', 'archived', 'complete'] as FilterStatus[]).map(f => (
           <button
             key={f}
@@ -151,11 +152,7 @@ export default function ProjectsPage() {
           ) : undefined}
         />
       ) : (
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-          gap: '16px',
-        }}>
+        <div className="projects-grid">
           {filtered.map(project => {
             const counts = taskCounts(project.id)
             return (

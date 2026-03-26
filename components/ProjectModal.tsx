@@ -217,6 +217,7 @@ export default function ProjectModal({ onSave, onClose }: ProjectModalProps) {
   return (
     <div
       onClick={onClose}
+      className="modal-container"
       style={{
         position: 'fixed', inset: 0,
         background: 'rgba(0,0,0,0.7)',
@@ -226,6 +227,7 @@ export default function ProjectModal({ onSave, onClose }: ProjectModalProps) {
     >
       <div
         onClick={e => e.stopPropagation()}
+        className="modal-content"
         style={{
           background: '#111118',
           border: '1px solid #1e1e2e',
@@ -235,6 +237,7 @@ export default function ProjectModal({ onSave, onClose }: ProjectModalProps) {
           padding: '24px',
           maxHeight: '90vh',
           overflowY: 'auto',
+          boxSizing: 'border-box',
         }}
       >
         {/* Header */}
@@ -447,10 +450,11 @@ export default function ProjectModal({ onSave, onClose }: ProjectModalProps) {
         )}
 
         {/* Footer buttons */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '24px' }}>
+        <div className="modal-footer-btns" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '24px', gap: '8px' }}>
           <button
             className="btn-ghost"
             onClick={() => step === 1 ? onClose() : setStep(s => s - 1)}
+            style={{ minHeight: '44px' }}
           >
             {step === 1 ? 'Cancel' : '← Back'}
           </button>
@@ -469,6 +473,7 @@ export default function ProjectModal({ onSave, onClose }: ProjectModalProps) {
                   color: '#fff',
                   cursor: canProceed ? 'pointer' : 'not-allowed',
                   opacity: canProceed ? 1 : 0.5,
+                  minHeight: '44px',
                 }}
               >
                 Next →
@@ -487,6 +492,7 @@ export default function ProjectModal({ onSave, onClose }: ProjectModalProps) {
                   color: '#fff',
                   cursor: 'pointer',
                   opacity: saving ? 0.7 : 1,
+                  minHeight: '44px',
                 }}
               >
                 {saving ? 'Creating...' : 'Create Project'}
@@ -513,20 +519,24 @@ const inputStyle: React.CSSProperties = {
   background: '#0a0a0f',
   border: '1px solid #1e1e2e',
   borderRadius: '6px',
-  padding: '8px 10px',
-  fontSize: '13px',
+  padding: '10px 12px',
+  fontSize: '16px', // 16px prevents iOS zoom on focus
   color: '#e5e7eb',
   width: '100%',
   outline: 'none',
+  minHeight: '44px',
+  boxSizing: 'border-box',
 }
 
 const selectStyle: React.CSSProperties = {
   background: '#0a0a0f',
   border: '1px solid #1e1e2e',
   borderRadius: '6px',
-  padding: '8px 10px',
-  fontSize: '13px',
+  padding: '10px 12px',
+  fontSize: '16px', // 16px prevents iOS zoom on focus
   color: '#e5e7eb',
   width: '100%',
   outline: 'none',
+  minHeight: '44px',
+  boxSizing: 'border-box',
 }

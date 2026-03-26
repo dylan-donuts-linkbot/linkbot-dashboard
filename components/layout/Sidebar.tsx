@@ -259,42 +259,24 @@ export default function Sidebar({ projects }: SidebarProps) {
       {/* Mobile hamburger */}
       <button
         onClick={() => setMobileOpen(p => !p)}
-        style={{
-          display: 'none',
-          position: 'fixed',
-          top: '16px',
-          left: '16px',
-          zIndex: 200,
-          background: '#111118',
-          border: '1px solid #1e1e2e',
-          borderRadius: '6px',
-          padding: '8px 10px',
-          fontSize: '16px',
-          color: '#f0f0f0',
-          cursor: 'pointer',
-        }}
         className="mobile-menu-btn"
+        aria-label="Open navigation menu"
+        style={{ fontSize: '18px' }}
       >
-        ☰
+        {mobileOpen ? '✕' : '☰'}
       </button>
 
       {/* Mobile overlay */}
       {mobileOpen && (
         <div
           onClick={() => setMobileOpen(false)}
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(0,0,0,0.6)',
-            zIndex: 149,
-            display: 'none',
-          }}
-          className="mobile-overlay"
+          className="sidebar-overlay"
         />
       )}
 
       {/* Sidebar */}
       <aside
+        className={`sidebar-drawer${mobileOpen ? ' open' : ''}`}
         style={{
           position: 'fixed',
           top: 0,

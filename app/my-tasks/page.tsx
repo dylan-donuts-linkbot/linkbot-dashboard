@@ -169,7 +169,7 @@ export default function MyTasksPage() {
         </div>
       )}
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '24px' }}>
+      <div className="page-header-row" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '24px' }}>
         <div>
           <h1 style={{ margin: '0 0 4px', fontSize: '24px', fontWeight: 700, color: '#f0f0f0' }}>My Tasks</h1>
           <p style={{ margin: 0, fontSize: '14px', color: '#6b7280' }}>{tasks.filter(t => t.status !== 'done').length} open tasks</p>
@@ -186,9 +186,9 @@ export default function MyTasksPage() {
       )}
 
       {/* Filters */}
-      <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap' }}>
+      <div className="tasks-filter-bar" style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap' }}>
         {/* Status filter */}
-        <div style={{ display: 'flex', gap: '4px' }}>
+        <div className="tasks-status-pills" style={{ display: 'flex', gap: '4px' }}>
           {(['all', 'backlog', 'in_progress', 'in_review', 'done'] as FilterStatus[]).map(f => (
             <button
               key={f}
@@ -271,17 +271,13 @@ export default function MyTasksPage() {
               <button
                 onClick={() => handleMarkComplete(task)}
                 title={task.status === 'done' ? 'Mark as incomplete' : 'Mark as done'}
+                className="task-complete-btn"
                 style={{
-                  width: '32px',
                   background: task.status === 'done' ? '#22c55e22' : '#111118',
                   border: `1px solid ${task.status === 'done' ? '#22c55e' : '#1e1e2e'}`,
                   borderRadius: '7px',
                   cursor: 'pointer',
                   fontSize: '14px',
-                  flexShrink: 0,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
                   color: task.status === 'done' ? '#22c55e' : '#6b7280',
                 }}
               >

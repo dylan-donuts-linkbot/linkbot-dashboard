@@ -139,7 +139,7 @@ export default async function MetricsPage() {
       </div>
 
       {/* Top stats */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '12px', marginBottom: '28px' }}>
+      <div className="metrics-stats-grid" style={{ marginBottom: '28px' }}>
         {[
           { label: 'Total Spend', value: `$${totalSpend.toFixed(2)}`, color: '#f59e0b' },
           { label: 'Token Cost', value: `$${totalTokenCost.toFixed(4)}`, color: '#6366f1' },
@@ -155,7 +155,7 @@ export default async function MetricsPage() {
       </div>
 
       {/* Main grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+      <div className="metrics-two-col" style={{ marginBottom: '20px' }}>
         {/* Task velocity */}
         <div style={{ background: '#111118', border: '1px solid #1e1e2e', borderRadius: '10px', padding: '20px' }}>
           <h2 style={{ margin: '0 0 16px', fontSize: '14px', fontWeight: 600, color: '#f0f0f0' }}>Task Status</h2>
@@ -264,7 +264,7 @@ export default async function MetricsPage() {
 
       {/* Provider breakdown + Token cost by project */}
       {tokens.length > 0 && (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+        <div className="metrics-two-col" style={{ marginBottom: '20px' }}>
           {/* Provider breakdown */}
           <div style={{ background: '#111118', border: '1px solid #1e1e2e', borderRadius: '10px', padding: '20px' }}>
             <h2 style={{ margin: '0 0 16px', fontSize: '14px', fontWeight: 600, color: '#f0f0f0' }}>Token Cost by Provider</h2>
